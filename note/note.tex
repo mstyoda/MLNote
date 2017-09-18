@@ -1,0 +1,814 @@
+\documentclass[12pt,twosidep]{article}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{verbatim}
+\usepackage{CJK}
+\usepackage{indentfirst}
+\usepackage{mathrsfs}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{syntonly}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{ulem}
+\usepackage{fancyhdr}
+\usepackage[CJKbookmarks=true, colorlinks, linkcolor=black, anchorcolor=black, citecolor=blue, urlcolor=black]{hyperref}
+\usepackage{graphicx}
+\usepackage[top = 1.218in, bottom = 1.218in, left = 1.2in, right = 1.2in]{geometry}
+\usepackage{paralist}
+\usepackage{diagbox}
+
+\newtheorem{Def}{Definition}
+\newtheorem{Thm}{Theorem}
+\newtheorem{lem}[Thm]{Lemma}
+
+\begin{document}
+\begin{CJK*}{GBK}{song}
+\hypersetup{CJKbookmarks = true}
+\pagestyle{fancy}
+
+\let\enumerate\compactenum
+\let\endenumerate\endcompactenum
+\let\itemize\compactitem
+\let\enditemize\endcompactitem
+\setlength{\pltopsep}{5pt}
+
+\newcommand{\graph}[2]{
+    {\noindent
+    \begin{minipage}{\textwidth}
+        \centering
+        \includegraphics[width=#1]{#2}
+        \label{fig:non:float}
+    \end{minipage}
+    }
+}
+
+\setlength{\parindent}{2em}
+\setlength{\footskip}{30pt}
+\setlength{\baselineskip}{1.3\baselineskip}
+\title {\textbf{ML note}}
+
+\author{mstyoda 骆轩源}
+\date{}
+\maketitle
+\tableofcontents
+
+\newpage
+\section{Rademacher Complexity and VC-Dimension}
+\subsection{Rademacher complexity}
+Rademacher Complexity是用来衡量一个函数族$G: X \rightarrow \mathbb{R}$的复杂程度的指标，它考验的是$G$对于随机噪声的拟合能力。 比如给定样本$S = (z_{1},z_{2}...z_{m})$，其中$z_{i} = (x_{i},y_{i})$，那么先随机生成一个序列$\mathbf{\sigma} = (\sigma_{1},\sigma_{2}...\sigma_{m})$，然后在G中找到一个函数$g$，使得$\mathbf{g}(S) \cdot \mathbf{\sigma}$最大，把这个值对于$\mathbf{\sigma}$求期望，就得到了Empirical Rademacher complexity。
+
+\begin{Def}
+给定函数族$G$，其中的函数将$Z$映射到实数区间$[a,b]$，并且给定一个大小为$m$的$S$，$\sigma_{i}$独立\textbf{均匀}分布在$\{-1,1\}$内，则定义$G$对于$S$的Empirical Rademacher complexity 为：
+\begin{equation}
+    \hat{\mathcal{R}}_{S}(G) = E_{\sigma}[\sup_{g \in G}\frac{1}{m}\sum_{i = 1}^{m}{\sigma_{i}g(z_{i})}]
+\end{equation}
+\end{Def}
+
+很自然地，如果我们不固定$S$，只固定$m$，让$z_{1},z_{2}...z_{m}$独立同分布于$D$，则可以定义$G$对于样本大小为$m$的Rademacher complexity为：
+
+\begin{Def}
+给定函数族$G$，其中的函数将$Z$映射到实数区间$[a,b]$，并且给定$m$，$z_{i}$独立同分布$D$，$\sigma_{i}$独立均匀分布在$\{-1,1\}$内，则定义$G$ 对于$S$ 的Rademacher complexity 为：
+\begin{equation}
+    \begin{split}
+        \mathcal{R}_{m}(G) &= E_{S,\sigma}[\sup_{g \in G}\frac{1}{m}\sum_{i = 1}^{m}{\sigma_{i}g(z_{i})}]\\
+        &= E_{S \sim D^{m}}[\hat{\mathcal{R}}_{S}(G)]
+    \end{split}
+\end{equation}
+\end{Def}
+
+那么我们研究函数族的复杂性有什么作用呢？它能够提供如下一个bound:
+\begin{Thm}\label{Rademacher}
+假如$G$是一个函数族，其中的函数是从$Z$到$[0,1]$区间的映射，那么对于任意$\delta > 0$，至少有$1 - \delta$，使得对于任意$g \in G$满足：
+\begin{gather}
+    E[g(z)] \leq \frac{1}{m} \sum_{i = 1}^{m}g(z_i) + 2 \mathcal{R}_{m}(G) + \sqrt{\frac{\log{\frac{1}{\delta}}}{2m}}\\
+    \text{and\,\,\,\,} E[g(z)] \leq \frac{1}{m} \sum_{i = 1}^{m}g(z_i) + 2 \hat{\mathcal{R}}_{m}(G) + 3\sqrt{\frac{\log{\frac{2}{\delta}}}{2m}}
+\end{gather}
+\end{Thm}
+
+在证明之前，我们先来看看这个定理想要表达的意思，根据PAC那一章节的定义，Generalization error和 Empirical error分别为：
+\begin{gather}
+    R(h) = \Pr_{x \sim D}[h(x) \neq c(x)] = E_{x \sim D}[1_{h(x) \neq c(x)}]\\
+    \hat{R}(h) = \frac{1}{m}\sum_{i=1}^{m}{1_{h(x_{i})\neq c(x_{i})}}
+\end{gather}
+
+$R(h)$说的 假设$h$的错误率，$\hat{R}(h)$说的是 假设$h$在这$m$ 个测试样本上的错误率。 那么回到我们刚才的定理，给定一个假设空间$H$（是一个函数族），我们可以将其转换到令一个函数族$G$，对于任意$g \in G$，其对应于某一个$h \in H$，有$g(z) = g(x,y) = L(h(x),y)$，$L$是损失函数loss function。 在这里我们认为$L$为0-1 loss，也即:
+\begin{equation}
+    L(y',y) =
+    \begin{cases}
+        1 & y' \neq y\\
+        0 & y' = y
+    \end{cases}
+\end{equation}
+
+那么定理中左边的$E[g(z)]$就对应于$R(h)$，右边的$\frac{1}{m}\sum_{i = 1}^{m}g(z_i)$对应于$\hat{R}(h)$。所以定理说的其实是：
+\[R(h) \leq \hat{R}(h) + 2 \mathcal{R}_{m}(G) + \sqrt{\frac{\log{\frac{1}{\delta}}}{2m}}\]
+由于$R(h)$是很难说明的，但是$\hat{R}(h)$是可以实验得到的，该bound就能利用实验得出的结果来估算$R(h)$的一个上界。注意到$G$仅仅跟$L$和$H$有关，所以我们将$2 \mathcal{R}_{m}(G)$写成$H$ 的形式：(中间的推导基于$\sigma_{i}$是均匀分布在$\{-1,1\}$的随机变量，所以$E[\sigma_{i}] = 0$)
+\begin{equation}
+    \begin{split}
+        \hat{\mathcal{R}}_{S}(G) &= E_{\sigma}[\sup_{g \in G}{\frac{1}{m}\sum_{i = 1}^{m}{g(z_{i})\sigma_{i}}}]\\
+        &= E_{\sigma}[\sup_{g \in G}{\frac{1}{m}\sum_{i = 1}^{m}{\frac{1 - h(x_{i})y_{i}}{2}\sigma_{i}}}]\\
+        &= E_{\sigma}[\sup_{g \in G}{\frac{1}{m}\sum_{i = 1}^{m}{\frac{- h(x_{i})y_{i}}{2}\sigma_{i}}}]\\
+        &= \frac{1}{2}E_{\sigma}[\sup_{g \in G}{\frac{1}{m}\sum_{i = 1}^{m}{h(x_{i})\sigma_{i}}}] = \frac{1}{2}\hat{\mathcal{R}}_{SX}(H)\\
+    \end{split}
+\end{equation}
+最后一步推导是因为，当$y_{i}$只能是1或-1，所以$-y_{i}\sigma_{i}$也是在$\{-1,1\}$之间的均匀分布，和$\sigma_{i}$同分布，所以可以替换。由如上结论可以得到：
+\begin{equation}
+    \mathcal{R}_{m}(G) = E_{S\sim D^{m}}[\hat{\mathcal{R}}_{S}(G)] = \frac{1}{2}\mathcal{R}_{m}(H)
+\end{equation}
+
+所以到这一步，之前的定理可以转化为：
+\begin{gather}
+    R(h) \leq \hat{R}(h) + \mathcal{R}_{m}(H) + \sqrt{\frac{\log{\frac{1}{\delta}}}{2m}}\\
+    \text{and\,\,\,\,} R(h) \leq \hat{R}(h) + \hat{\mathcal{R}}_{S}(H) + 3\sqrt{\frac{\log{\frac{2}{\delta}}}{2m}}
+\end{gather}
+下面给出Theory\ref{Rademacher}的证明：
+\begin{proof}
+令$\Phi(S) = \sup_{g\in G}E[g(z)] - \frac{1}{m}\sum_{i=1}^{m}{g(z_{i})}$，它描述的是，相减的两个东西的差距的上界，也即求出$\Phi(S)$就可以完成证明，则对于任意$S'$，如果$S'$ 与$S$ 仅有1 个$z_{k}$ 不同，那么有:
+\begin{equation}
+    \Phi(S) - \Phi(S') = \sup_{g \in G}\frac{1}{m}g(z_{k}') - g(z_{k}) \leq \frac{1}{m}
+\end{equation}
+由对称性可以知道，$\Phi(S') - \Phi(S) \leq \frac{1}{m}$，这时候使用McDiarmid’s inequality(之后证明)，可以得到，对于任意$\delta > 0$，至少有 $1 - \delta/2$ 的概率满足：
+\begin{equation}
+    \Phi(S) \leq E_{S}[\Phi(S)] + \sqrt{\frac{\log{\frac{2}{\delta}}}{2m}}
+\end{equation}
+
+如果$E_{S}[\Phi(S)]$是一个比较稳定的值，那么该不等式也即说明了随着样本数目$m$的增加，二者的差距在$1-\delta/2$的信心下的误差上界以根号的速度减小，接下来研究$E_{S}[\Phi(S)]$的上界:
+\begin{equation}
+    \begin{split}
+        E_{S}[\Phi(S)] &= E_{S}[\sup_{g\in G}E[g(z)] - \frac{1}{m}\sum_{i=1}^{m}{g(z_{i})}]\\
+        &= E_{S}[\sup_{g \in G}E_{S'}[\hat{E}_{S'}[g(z)]] - \hat{E}_{S}[g(z)]]\\
+        &= E_{S}[\sup_{g \in G}E_{S'}[\hat{E}_{S'}[g(z)] - \hat{E}_{S}[g(z)]]]\\
+        &\leq E_{S,S'}[\sup_{g\in G}(\hat{E}_{S'}[g(z)] - \hat{E}_{S}[g(z)])]
+    \end{split}
+\end{equation}
+最后一步用到了$\sup_{x}E_{y}[f(x,y)]\leq E_{y}[\sup_{x}f(x,y)]$。
+
+考虑到$\sigma_{i}$等概率取自1或-1，由于$S$和$S'$均为随机变量，当$\sigma_{i}$给定时，根据对称性有
+$E_{S,S'}\sigma_{i}(g(z_{i}) - g(z_{i}')) = E_{S,S'}(g(z_{i}) - g(z_{i}'))$，那么也就有：
+\begin{equation}
+    \begin{split}
+        \text{上式}
+        &= E_{\sigma,S,S'}[\sup_{g \in G}\frac{1}{m}\sum_{i = 1}^{m}{\sigma_{i}(g(z_{i}) - g(z_{i}'))}]\\
+        &= E_{\sigma,S}[\sup_{g \in G}\frac{1}{m}\sum_{i = 1}^{m}{\sigma_{i}(g(z_{i})}]] + E_{\sigma,S'}[\sup_{g \in G}\frac{1}{m}\sum_{i = 1}^{m}{\sigma_{i}(g(z'_{i})}]]\\
+        &= 2 \mathcal{R}_{m}(G)
+    \end{split}
+\end{equation}
+
+综上我们有，至少有$1-\delta/2$的信心满足：
+\begin{equation}
+    \begin{split}
+        \Phi(S) &\leq E_{S}[\Phi(S)] + \sqrt{\frac{\log{\frac{2}{\delta}}}{2m}} \\
+        &\leq 2 \mathcal{R}_{m}(G) + \sqrt{\frac{\log{\frac{2}{\delta}}}{2m}}
+    \end{split}
+\end{equation}
+
+又因为对于任意两个仅相差一个元素的$S'$和$S$，$\hat{\mathcal{R}}_{S}(G) - \hat{\mathcal{R}}_{S'}(G) \leq \frac{1}{m}$，再一次使用McDiarmid.s inequality，可以知道至少有$1-\delta/2$的信心满足：
+\begin{equation}
+       E_{S}[\hat{\mathcal{R}}_{S}(G)] \leq \hat{\mathcal{R}}_{S}(G) + \sqrt{\frac{\log{\frac{2}{\delta}}}{2m}}
+\end{equation}
+也即：
+\begin{equation}
+      \mathcal{R}_{m}(G) \leq \hat{\mathcal{R}}_{S}(G) + \sqrt{\frac{\log{\frac{2}{\delta}}}{2m}}
+\end{equation}
+
+使用union bound合并式上两个式子，可以至少有$1-\delta$的概率满足：
+\begin{equation}
+    \begin{split}
+        \Phi(S) &\leq 2 \hat{\mathcal{R}}_{S}(G) + 3\sqrt{\frac{\log{\frac{2}{\delta}}}{2m}}
+    \end{split}
+\end{equation}
+到此为止，该定理的两个不等式都得到了证明。
+\end{proof}
+
+由于$\mathcal{R}_{m}(H)$的计算涉及到随机变量和上确界，其计算非常困难，接下来我们引入其一个上界growth function，它与随机变量无关，可计算性更强。
+
+\subsection{Growth function}
+首先引入growth function的定义，
+\begin{Def}
+    给定假设空间$H$，和正整数$m$，定义growth function $\Pi_{H}:\mathbb{N} \rightarrow \mathbb{N} $为：
+    \begin{equation}
+        \Pi_{H}(m) = \max_{(x_{1},x_{2}...x_{m})\in \mathcal{X}}{|\{(h(x_{1}),h(x_{2}),...,h(x_{m})) | h \in H\}|}
+    \end{equation}
+\end{Def}
+
+该函数定义的也是$H$的一个复杂性，给定$m$个点，用$H$中的函数去映射，能产生不超过$|H|$种结果，找到$m$个点，使得该结果数最多，此时的结果数就为$\Pi_{H}(m)$。
+
+接下来引入Massart’s lemma，它为Rademacher complexity和growth function搭了一个重要的桥梁：
+\begin{Thm}\label{Massart's lemma}
+设有限集合$A\subseteq R^{m}$，令$r = \max_{x \in A}\left \| x \right \| _{2}$，则有：
+\begin{equation}
+    E_{\sigma }[\frac{1}{m} \sup_{x \in A}{\sum_{i=1}^{m}{\sigma_{i}x_{i}}}] \leq \frac{r\sqrt{2 \log |A|}}{m}
+\end{equation}
+
+其中$\sigma_{i}$独立均匀取自$\{-1,1\}$。
+\end{Thm}
+
+\begin{proof}
+定义随机变量$Y = \sup_{x \in A}{\sum_{i = 1}^{m}{\sigma_{i}x_{i}}}$，函数$f(y) = \exp(t \cdot y),t > 0$，所以有：
+\begin{equation}
+    f(E[Y]) \leq E[f(y)]
+\end{equation}
+这是因为对于任意$\alpha_{1},\alpha_{2},...,\alpha_{n} > 0$且$\sum_{i}\alpha_{i} = 1$时，有：(下凸函数性质)
+\begin{equation}
+    f(\alpha_{1}y_{1} + \alpha_{2}y_{2}+...+\alpha_{n}y_{n}) \leq \alpha_{1}f(y_{1}) + \alpha_{2}f(y_{2})+...+\alpha_{n}f(y_{n})
+\end{equation}
+又因为，$Y$的取值最多只有$2^{m}$种，故令$n = 2^m$，$y_{1}...y_{n}$分别对应每一种取值，则有：
+\begin{equation}
+    f(E[Y]) = f(\sum_{i = 1}^{n}y_{i}\Pr[Y = y_{i}]) \leq \sum_{i = 1}^{n}\Pr[Y = y_{i}]f(y_{i}) = E[f(y)]
+\end{equation}
+所以有，
+\begin{equation}
+    \begin{split}
+    \exp(t \cdot E[\sup_{x \in A}{\sum_{i = 1}^{m}{\sigma_{i}x_{i}}}])
+    &\leq E[\exp(t \cdot \sup_{x \in A}{\sum_{i = 1}^{m}{\sigma_{i}x_{i}}})]\\
+    &= E[\sup_{x \in A}{\exp(\sum_{i = 1}^{m}{t \cdot \sigma_{i}x_{i}})}]\\
+    &\leq \sum_{x \in A} E[\exp(\sum_{i = 1}^{m}{t \cdot \sigma_{i}x_{i}})]\\
+    &= \sum_{x \in A}\prod_{i=1}^{m}{E[\exp(t\sigma_{i}x_{i})]}
+    \end{split}
+\end{equation}
+上述推导用了求和来放缩$\sup$，并且$\sigma_{i}$之间相互独立，继续放缩右边的式子:
+\begin{equation}
+    E[\exp(t\sigma_{i}x_{i})] \leq \exp(\frac{t^2(2r)^2}{8})
+\end{equation}
+这是因为$\sigma_{i} x_{i} \in [-x_{i},x_{i}]$，令$a = -x_{i}, b = x_{i}$，由凸函数性质有：
+\begin{equation}
+\exp(t\sigma_{i} x_{i}) \leq \frac{b - \sigma_{i} x_{i}}{b - a} \exp(ta)
++ \frac{\sigma_{i} x_{i} - a}{b - a}\exp(tb)
+\end{equation}
+
+两边取期望得到：
+\begin{equation}
+E[e^{t\sigma_{i} x_{i}}] \leq e^{ta}E[\frac{b - \sigma_{i} x_{i}}{b - a}]
++ e^{tb}E[\frac{\sigma_{i} x_{i} - a}{b - a}]
+\end{equation}
+由于$E[\sigma_{i}x_{i}] = 0$ 所以上式子可以写成：
+\begin{gather}
+    \begin{split}
+        E[e^{t\sigma_{i} x_{i}}] &\leq e^{ta}\frac{b}{b - a} + e^{tb}\frac{-a}{b - a}\\
+        &\leq e^{\phi(t)}
+    \end{split}\\
+    \begin{split}
+        \phi(t) &= \log(e^{ta}\frac{b}{b - a} + e^{tb}\frac{-a}{b - a})\\
+        &= t a + \log(\frac{b}{b - a} + e^{tb-ta}\frac{-a}{b - a})\\
+        &= \phi(0) + t \phi'(0) + \frac{t^2}{2} \phi''(\theta)\\
+        &= t^2 \frac{(b - a)^2}{8}
+    \end{split}
+\end{gather}
+最后一步是暴力泰勒展开得到的，所以得到：
+\begin{gather}
+    E[e^{t \sigma_{i} x_{i}}] \leq \exp(t^2 \frac{(b - a)^2}{8}) = \exp(t^2 \frac{x_{i}^2}{2})\\
+    \begin{split}
+        \exp(t \cdot E[\sup_{x \in A}{\sum_{i = 1}^{m}{\sigma_{i}x_{i}}}])
+        &\leq \sum_{x \in A}\exp(t^2 r^2 / 2)\\
+        &\leq |A|\exp(t^2 r^2 / 2)\\
+    \end{split}\\
+    \begin{split}
+        (t \cdot E[\sup_{x \in A}{\sum_{i = 1}^{m}{\sigma_{i}x_{i}}}])
+        &\leq (\frac{t^2 r^2}{2}) + \log |A|
+    \end{split}\\
+    \begin{split}
+       E[\sup_{x \in A}{\sum_{i = 1}^{m}{\sigma_{i}x_{i}}}]
+        &\leq (\frac{t r^2}{2}) + \frac{\log |A|}{t}
+    \end{split}
+\end{gather}
+取$t = \sqrt{\frac{2\log|A|}{r^2}}$可以得到右边最小值为$\sqrt{2 \log |A| r^2}$，此时得到：
+\begin{gather}
+    E[\sup_{x \in A}{\sum_{i = 1}^{m}{\sigma_{i}x_{i}}}] \leq \sqrt{2 \log |A| r^2}\\
+    \frac{1}{m}E[\sup_{x \in A}{\sum_{i = 1}^{m}{\sigma_{i}x_{i}}}] \leq \frac{r \sqrt{2 \log |A|}}{m}
+\end{gather}
+定理得证。
+
+\end{proof}
+
+\newpage
+我们尝试把$\mathcal{R}_{m}(H)$和$\Pi_{H}(m)$建立联系，首先假设$H$中的函数$h$将点映射到$\{-1,1\}$，则：
+\begin{equation}
+    \mathcal{R}_{m}(H) = E_{S \sim D^{m}}[E_{\sigma}[\sup_{h \in H}\frac{1}{m}\sum_{i = 1}^{m}{\sigma_{i} h(z_{i})}]]
+\end{equation}
+使用Theorem\ref{Massart's lemma}，把$H_{S}$看成$A$可以得到：
+\begin{equation}
+    \begin{split}
+        \mathcal{R}_{m}(H) &\leq E_{S \sim D^{m}}[\frac{r\sqrt{2 \log |H_{S}|}}{m}]\\
+        &\leq \frac{r \sqrt{2 \log \Pi_{H}(m)}}{m}
+    \end{split}
+\end{equation}
+
+其中当$S$给定时$r = \max_{h \in H}\{\left \|(h(x_{1}),h(x_{2}),...,h(x_{m})) \right \|_{2}\}$，我们假设$H$中的函数映射到$\{-1,1\}$，那么有$r \leq \sqrt{m}$对任意$S \sim D^{m}$成立。
+
+所以在这种假定下，上式可以写成：
+\begin{equation}
+    \mathcal{R}_{m}(H) \leq \sqrt{\frac{2 \log \Pi_{H}(m)}{m}}
+\end{equation}
+
+所以前一小节的bound可以被写为：
+\begin{equation}
+    \begin{split}
+        R(h) &\leq \hat{R}(h) + \mathcal{R}_{m}(H) + \sqrt{\frac{\log \frac{1}{\delta}}{2 m}}\\
+        &\leq \hat{R}(h) + \sqrt{\frac{2 \log \Pi_{H}(m)}{m}} + \sqrt{\frac{\log \frac{1}{\delta}}{2 m}}\\
+    \end{split}
+\end{equation}
+
+\subsection{VC-dimension}
+前面提到的growth function虽然说不依赖于随机变量，但是计算仍然相当困难，接下来引入另外一个用来衡量假设空间$H$的复杂性的指标，VC-dimension。它的定义如下：
+\begin{Def}
+    一个假设空间H的VC-dimension被定义为，最大的可能被$H$\textbf{完全打散}的数据的大小，也即：
+    \begin{equation}
+        VCdim(H) = \max\{m : \Pi_{H}(m) = 2^m\}
+    \end{equation}
+\end{Def}
+
+它的定义蕴含了两个意思：
+\begin{enumerate}
+    \item 对于任意$m\leq VCdim(H)$，存在一个$S = (x_{1},x_{2},...,x_{m})$，使得$|H_{|S}| = 2^m$。
+    \item 对于任意$m > VCdim(H)$，不存在$S = (x_{1},x_{2},...,x_{m})$，使得$|H_{|S}| = 2^m$。
+\end{enumerate}
+
+下面我们将$VCdim(H)$和$\Pi_{H}(m)$建立联系，这样我们就可以将之前的bound用$VCdim(H)$来表示。
+
+首先引入一个定理：
+\begin{Thm}\label{Sauer's lemma}
+设假设空间$H$的$VCdim(H) = d$，那么对于任意$m \in \mathbb{N}$，有如下不等式成立：
+\begin{equation}
+    \Pi_{H}(m) \leq \sum_{i = 0}^{d}{\binom{m}{i}}
+\end{equation}
+\end{Thm}
+\begin{proof}
+    对$m + d$的大小归纳，这么归纳的目的是为了用如下性质：
+    \begin{equation}
+        \binom{m}{i} = \binom{m - 1}{i} + \binom{m - 1}{i - 1}
+    \end{equation}
+
+    利用该性质我们可以得到：
+    \begin{equation}
+        \sum_{i = 0}^{d}{\binom{m - 1}{i}} + \sum_{i = 0}^{d - 1}{\binom{m - 1}{i}} = \sum_{i = 0}^{d}{\binom{m}{i}}
+    \end{equation}
+
+    接下来我们按照两重循环求组合数的顺序(先枚举$m$，再枚举$d$) 来归纳证明：
+
+    \begin{enumerate}
+        \item 基础： $m = 1$时，$d = 0$，$d = 1$都有结论成立。
+        \item 归纳： $m \geq 2$时，若$d = 0$则结论成立，否则令$S$为满足$|H_{|S}| = \Pi_{H}(m)$的一个Sample。 令$G$表示将$H$约束到$S$上的函数集合(将$H$定义域改成$S$)，有$|G| = \Pi_{H}(m)$。
+
+            下面我们将$G$分割成两个假设空间$G_{1}$和$G_{2}$，使得$VCdim(G_{1}) \leq d$，$VCdim(G_{2}) \leq d - 1$，且有$|G_{1}| \leq \Pi_{G_{1}}(m - 1)$，$|G_{2}| \leq \Pi_{G_{2}}(m - 1)$，就能完成归纳：
+
+            先约定$H:\mathcal{X} \rightarrow \{0,1\}$，$S' = (x_{1},x_{2},...,x_{m-1})$，
+
+            那么令$G_{1}$为将$H$约束到$S'$上的函数集合，也就是在$G$中只看前$m - 1$ 个点的分类结果来去重。
+
+            我们在$G$中找到两个函数$g_{1}$,$g_{2}$，使得它们约束到$S'$上都是一样的，那么有它们对$x_{m}$的分类就一个是0，一个是1。我们把分类是0的那个函数扔到$G_{2}'$里。
+
+            我们将$G$中的函数，按照其在$S'$的取值作为key，$G$中每个$key$恰好在$G_{1}$中出现一次，$G$ 中每个出现2次的$key$都恰好在$G_{2}'$出现一次。
+
+            所以有$|G_{1}| + |G_{2}'| = |G|$，再让$G_{2}$为将$G_{2}'$约束到$S'$的结果，一定有$|G_{2}| = |G_{2}'|$，故替换后有$|G_{1}| + |G_{2}| = |G|$。
+
+
+            由于$G_{1},G_{2}$，考虑到$G_{1}$，$G_{2}$大小都等于自己作用在$S'$上的大小，由growth function定义有：
+            \begin{gather}
+                |G_{1}| \leq \Pi_{G_{1}}(m - 1)\\
+                |G_{2}| \leq \Pi_{G_{2}}(m - 1)
+            \end{gather}
+
+            由于$G_{1} \subseteq H$，肯定有$VCdim(G_{1}) \leq VCdim(H) = d$，又因为$G_{2}$的定义域是$S'$，我们假设其VCdim为$k$，那么$G_{2}$的极限也就是能把 $S_{k} \subseteq S'$中的元素全部打散，往$S_{k}$中加入$x_{m}$，这时$H$就可以打散，但是$G_{2}$不可以打散。所以有$VCdim(G_{2}) \leq VCdim(H) - 1 = d - 1$。
+
+            所以有:
+            \begin{gather}
+                |G_{1}| \leq \Pi_{G_{1}}(m - 1) \leq \sum_{i = 0}^{d}\binom{m - 1}{i}\\
+                |G_{2}| \leq \Pi_{G_{2}}(m - 1) \leq \sum_{i = 0}^{d-1}\binom{m - 1}{i}\\
+                \Pi_{H}(m) = |G| = |G_{1}| + |G_{2}| \leq \sum_{i = 0}^{d}\binom{m}{i}
+            \end{gather}
+    \end{enumerate}
+\end{proof}
+
+然后我们把组合数求和变成一个容易求的上界，如果($m \geq d$)，
+\begin{equation}
+    \begin{split}
+         \Pi_{H}(m) &\leq \sum_{i = 0}^{d}\binom{m}{i}\\
+                    &\leq \sum_{i = 0}^{d}\binom{m}{i}(\frac{m}{d})^{d - i}\\
+                    &\leq \sum_{i = 0}^{m}\binom{m}{i}(\frac{m}{d})^{d - i}\\
+                    &= (\frac{m}{d})^{d} \sum_{i = 0}^{m}\binom{m}{i}(\frac{d}{m})^i\\
+                    &= (\frac{m}{d})^{d} (1 + \frac{d}{m})^m\\
+                    &= (\frac{m}{d})^{d} (1 + \frac{d}{m})^{m/d * d}\\
+                    &\leq (\frac{e m}{d})^d
+    \end{split}
+\end{equation}
+
+推导中比较巧妙的地方在于，凭空加入$(\frac{m}{d})^{d - i}$这一项，凑出来一个二项式求和，反向使用二项式定理，然后用自然对数$e$的展开就很自然了。
+
+到了这一步，我们可以将之前的bound改成，如果$m \geq d$，对于某VCdim为$d$的假设空间$H$，有$1 - \delta$的信心满足：
+\begin{equation}
+    \begin{split}
+        R(h) &\leq \hat{R}(h) + \sqrt{\frac{2 \log \Pi_{H}(m)}{m}} + \sqrt{\frac{\log \frac{1}{\delta}}{2 m}}\\
+            &\leq \hat{R}(h) + \sqrt{\frac{2d \log (\frac{e m}{d})}{m}} + \sqrt{\frac{\log \frac{1}{\delta}}{2 m}}\\
+            &\leq \hat{R}(h) + O \left( \sqrt{\frac{\log (m / d)}{(m / d)}}\right)
+    \end{split}
+\end{equation}
+
+接下来介绍一个结论：
+\begin{Thm}
+    所有$n$维的超平面分类函数构成的集合$H_{n}$的VCdim为$n + 1$。
+\end{Thm}
+
+ 一个$n$维超平面可以用一个$n$维向量$w = (w_{1},w_{2}...w_{n})^{T}$和一个实数$b$表示，该平面由$w \cdot x = b$ 确定。 所以对于该超平面分类器对点$x$的分类为$sgn(w \cdot x - b)$，下面给出上述定理的证明：
+\begin{proof}
+    令$m = n + 1$，构造$S_{X} = (x_{0},x_{1},...,x_{n})$，其中$x_{0}$为原点，$x_{i}$为$n$维one$-$hot向量，第$i$维为1。 则对于任意$S_{Y} = (y_{0},y_{1},...,y_{n})$，$y_{i} \in \{-1,1\}$，则令$w = (y_{1},y_{2},...,y_{n})$，
+    $b = y_{0}/2$，则有：
+    \begin{equation}
+            sgn(w \cdot x_{i} - b) = sgn(y_{i} - y_{0}/2) = y_{i}
+    \end{equation}
+
+    对所有$0 \leq i \leq n$成立，所以证明了存在一个包含$n + 1$ 个点的sample使得其能被$H_{n}$打散，接下来证明$H_{n}$无法打散任意一个大小为$n + 2$的sample。
+
+    这需要利用到一个性质，对于任意一个$S = (x_{1},x_{2},...,x_{n + 2})$，一定存在其一个划分$S_{1}$和$S_{2}$，使得$S_{1}$的凸壳与$S_{2}$的凸壳相交。 有这条性质的话，我们假设可以找到一个超平面分类器能分类$S_{1}$和$S_{2}$，那么该平面肯定分开了该凸壳，得到这两个凸壳不可能相交，于是产生矛盾，就证明了结论。
+
+    那么下面来证明上述性质，我们考虑方程组：
+    \begin{equation}
+        \sum_{i = 1}^{d + 2}\alpha_{i}x_{i} = 0 \text{\,\,\,\,\,\,and\,\,\,\,\,\,} \sum_{i = 1}^{d + 2}\alpha_{i} = 0
+    \end{equation}
+    该方程组有$d + 2$个未知数$\alpha_{1...d + 2}$，和$d + 1$个方程，所以肯定有非零解$\beta_{1},...,\beta_{d + 2}$，那么令
+    \begin{gather}
+        I_{1} = \{i \in [1,d + 2] : \beta_{i} > 0\}\\
+        I_{2} = \{i \in [1,d + 2] : \beta_{i} < 0\}\\
+        \beta = \sum_{i\in I_{1}}\beta_{i}
+    \end{gather}
+
+    则有：
+    \begin{equation}
+        \sum_{i \in I_{1}}{\frac{\beta_{i}}{\beta} x_{i}} = -\sum_{i \in I_{2}}{\frac{\beta_{i}}{\beta} x_{i}}
+    \end{equation}
+
+    由凸壳的定义(书上B.4)可以知道，点$\sum_{i \in I_{1}}{\frac{\beta_{i}}{\beta} x_{i}}$即在$I_{1}$下标里的点构成的凸壳里，也在$I_{2}$下标里的点构成的凸壳里。
+\end{proof}
+
+
+\section{Boosting}
+\subsection{Introduction}
+这一章节讲述的Boosting是一种将多个弱的分类器合成出一个强的分类器的方法。 PAC-learnable的条件对我们来说太过苛刻，我们不妨放低一点标准，所以引入一个新的概念：
+\begin{Def}[Weak learning]
+如果一个Concept Class $C$，满足存在一个算法$A$，和一个常数$\gamma > 0$，一个固定的多项式$poly(.,.,.,.)$使得对于任意$\epsilon > 0$和$\delta > 0$，以及任意分布$D$，和任意给定$c \in C$，当$m \geq poly(1/\epsilon, 1/\delta,n,size(c))$时：
+\begin{equation}
+    \Pr_{S \sim D^{m}} \left[R(h_{s}) \leq \frac{1}{2} - \gamma \right] \geq 1 - \delta
+\end{equation}
+\end{Def}
+
+简单来说，存在一个学习concept class $C$的算法$A$，使得当训练数据越来越多的时候，算法$A$返回的分类器错误率小于$\frac{1}{2}$的概率趋近于1。这样的算法被称为 weak learning algorithm，其返回的分类器(也就是$h \in H$)成为base classifiers。
+
+Boost的中心思想就是运用weak learning algorithm去构造一个strong learner， 接下来就来介绍AdaBoost。
+
+\subsubsection{AdaBoost}
+AdaBoost算法如下所示：
+\begin{algorithm}
+    \caption{AdaBoost$(S = ((x_{1},y_{1}),(x_{2},y_{2}),...,(x_{m},y_{m})))$}
+    \begin{algorithmic}[1]
+        \For {$i = 1 \to m$}
+            \State $D_{1}(i) \leftarrow \frac{1}{m}$
+        \EndFor
+        \For {$t = 1 \to T$}
+            \State $h_{t} \leftarrow $ base classfier in H with small error
+            $\epsilon_{t} = \Pr_{i \sim D_{t}}\left[h(x_{i}) \neq y_{i}\right]$
+
+            \State $\alpha_{t} \leftarrow \frac{1}{2}\log\frac{1 - \epsilon_{t}}{\epsilon_{t}}$
+            \State $Z_{t} \leftarrow 2[\epsilon_{t}(1 - \epsilon_{t})]^{\frac{1}{2}}$
+            \For {$i = 1 \to m$}
+                \State $D_{t+1}(i) \leftarrow
+                \frac{D_{t}(i)\exp(-\alpha_{t}y_{i}h_{t}(x_{i}))}{Z_{t}}$
+            \EndFor
+        \EndFor
+        \State $g \leftarrow \sum_{t = 1}^{T}\alpha_{t}h_{t}$
+        \State \Return $h = sgn(g)$
+    \end{algorithmic}
+\end{algorithm}
+
+算法简单来看其实就是迭代$T$次，第$t$次迭代找到在分布$D_{t}$下错误率$\epsilon_{t}$\textbf{最小}的$h_{t}\in H$，根据$\epsilon_{t}$得到$h_{t}$在$g$中的比例$\alpha_{t}$，并计算$D_{t + 1}$ 开始下一次迭代。
+
+
+首先来看$\alpha_{t} = \frac{1}{2} \log{\frac{1 - \epsilon_{t}}{\epsilon_{t}}}$，由于$h_{t} \in H$ 是base classfier，所以$\epsilon_{t} < \frac{1}{2}$，也就有$\alpha_{t} > 0$，而且错误率$\epsilon_{t}$越小，$\alpha_{t}$越大，也符合直觉。
+
+再来看分布$D_{t}$如何计算，一开始$D_{1}(i) = \frac{1}{m}$为均匀分布。 之后更新$D_{t}$的策略是减少$h_{t}(x_{i}) = y_{i}$的分布，而增加$h_{t}(x_{i}) \neq y_{i}$的分布，也就是多“练习”错误的“题”才有进步的空间。
+
+$Z_{t}$是一个归一化因子，也即：
+\begin{equation}
+    2[\epsilon_{t}(1 - \epsilon_{t})]^{\frac{1}{2}} = \sum_{i = 1}^{m}{D_{t}(i)\exp(-\alpha_{t}y_{i}h_{t}(x_{i}))}
+\end{equation}
+
+接下来说明上式的正确性，由于：
+\begin{gather}
+    \alpha_{t} = \frac{1}{2}\log{\frac{1 - \epsilon_{t}}{\epsilon_{t}}}
+\end{gather}
+
+将该结果代入要证明的结论的右边得到：
+\begin{equation}
+    \begin{split}
+        \text{右边} &= \sum_{i = 1}^{m}D_{t}(i)\exp(-\alpha_{t}y_{i}h_{t}(x_{i}))\\
+        &= \sum_{i = 1}^{m}{D_{t}(i)\left(\frac{1 - \epsilon_{t}}{\epsilon_{t}}\right)^{\frac{-1}{2}y_{i}h_{t}(x_{i})}}\\
+        &= \sum_{y_{i} \neq h_{t}(x_{i})}{D_{t}(i)\left(\frac{1 - \epsilon_{t}}{\epsilon_{t}}\right)^{1/2}}
+        +\sum_{y_{i} = h_{t}(x_{i})}{D_{t}(i)\left(\frac{1 - \epsilon_{t}}{\epsilon_{t}}\right)^{-1/2}}\\
+        &= \epsilon_{t}\left(\frac{1 - \epsilon_{t}}{\epsilon_{t}}\right)^{1/2} + (1 - \epsilon_{t})\left(\frac{1 - \epsilon_{t}}{\epsilon_{t}}\right)^{-1/2}\\
+        &= 2(\epsilon_{t}(1 - \epsilon_{t}))^{1/2} = \text{左边}\\
+    \end{split}
+\end{equation}
+
+接下来我们给出$\hat{R}(g)$的一个上界：
+\begin{Thm}
+AdaBoost得到的$g$的empirical error 满足：
+\begin{equation}
+    \hat{R}(g) \leq \exp \left[-2\sum_{t = 1}^{T}(\frac{1}{2} - \epsilon_{t})^2 \right]
+\end{equation}
+\end{Thm}
+
+由该定理可以知道，$\epsilon_{t}$越小的话，上界就会越紧，所以我们是要选择$\epsilon_{t}$\textbf{尽量小}的$h_{t}$，在证明该定理之前，需要一个结论来辅助：
+\begin{equation}
+    D_{t + 1}(i) = \frac{e^{-y_{i}g_{t}(x_{i})}}{m \prod_{s = 1}^{t}Z_{s}}
+\end{equation}
+其中$g_{t} = \sum_{s = 1}^{t}{g_{s}\alpha_{s}}$，可以用归纳法证明该结论：
+\begin{enumerate}
+    \item 基础：$t = 1$时，$D_{2}(i) = \frac{D_{1}(i)\exp(-\alpha_{1}y_{i}h_{1}(x_{i}))}{Z_{1}} = \frac{\exp(-y_{i}g_{1}(x_{i}))}{mZ_{1}}$。
+    \item 归纳：假设结论对$1,2,...,t-1$成立，由算法的定义有：
+    \begin{gather}
+        D_{t+1}(i) = \frac{D_{t}(i)\exp(-\alpha_{t}y_{i}h_{t}(x_{i}))}{Z_{t}}
+    \end{gather}
+    由归纳假设可以知道：
+    \begin{gather}
+        D_{t}(i) = \frac{\exp{(-y_{i}g_{t - 1}(x_{i}))}}{m \prod_{s = 1}^{t - 1}Z_{s}}
+    \end{gather}
+    代入上式可以得到：
+    \begin{equation}
+        \begin{split}
+            D_{t+1}(i) &= \frac{\exp(-(\alpha_{t}y_{i}h_{t}(x_{i}) + y_{i}g_{t - 1}(x_{i})))}{m \prod_{s = 1}^{t}Z_{s}}\\
+            &= \frac{\exp(-y_{i}g_{t}(x_{i}))}{m \prod_{s = 1}^{t}Z_{s}}
+        \end{split}
+    \end{equation}
+    所以归纳成立。
+\end{enumerate}
+
+有了这个结论，现在证明上述定理：
+\begin{proof}
+由empirical error 的定义可以知道，$\hat{R}(g) = \frac{1}{m}\sum_{i = 1}^{m}{1_{g(x_{i})\neq y_{i}}}$，所以有：
+\begin{equation}
+    \begin{split}
+        \hat{R}(g) &= \frac{1}{m}\sum_{i = 1}^{m}{1_{g(x_{i})\neq y_{i}}}\\
+        &\leq \frac{1}{m}\sum_{i = 1}^{m}{e^{-g(x_{i})y_{i}}}
+    \end{split}
+\end{equation}
+
+由于$\sum_{i = 1}^{m}{D_{T + 1}(i)} = 1 = \sum_{i = 1}^{m}{\frac{\exp(-y_{i}g_{T}(x_{i}))}{m \prod_{s = 1}^{T}Z_{s}}}$，所以有：
+\begin{gather}
+    \sum_{i = 1}^{m}{\frac{1}{m}{\exp(-y_{i}g_{T}(x_{i}))}} = {\prod_{s = 1}^{T}Z_{s}} = \prod_{s = 1}^{T}{2[\epsilon_{s}(1 - \epsilon_{s})]^{\frac{1}{2}}}
+\end{gather}
+
+代入上式可以得到：
+\begin{equation}
+    \begin{split}
+        \hat{R}(g) &\leq \frac{1}{m}\sum_{i = 1}^{m}{e^{-g(x_{i})y_{i}}}\\
+        &\leq {\prod_{s = 1}^{T}{2[\epsilon_{s}(1 - \epsilon_{s})]^{\frac{1}{2}}}}
+    \end{split}
+\end{equation}
+
+\end{proof}
+\section{Dimensionality Reduction}
+\subsection{Principal Component Analysis}
+我们经常用一个$n$维的向量来描述一个事物，比如说一个单词，一张图片。 那么有时候$n$太大导致处理太困难。 希望能将数据重新表示成一个$k$维（$k$ 远远小于$n$）的向量。 比如有100个2维向量，恰好都落在一条直线上，那么只需要一个Pd，加上100个实数就可以表示， 但是一般情况下数据不可能恰好落在一条直线上。那么想把这100 个点从二维降到一维，就必须要有所损失。 那么一个直观的做法就是，找到一条直线，使得这100个点离这条直线的偏离最小，然后对于某个点，它的降维后的结果就是在这个直线上的投影。
+
+\subsubsection{奇异值分解(Singular Value Decomposition}
+首先需要约定一下奇异值分解SVD的形式（与线性代数(下)有点不同），
+对于一个$n$行$m$列的矩阵$A$，设其SVD分解为：
+\begin{equation}
+    A = U \Sigma V^{T}
+\end{equation}
+其中$U = (u_{1},u_{2},...,u_{r})$是一个$n$行$r$列的矩阵，$r$为$A$的秩(rank)，$\Sigma$为$r$行$r$列的对角方阵。 $V$为$m$行$r$ 列的矩阵。
+
+满足$U$中$r$个列向量两两正交，也即有$U^{T}U = I_{r}$，类似地有$V^{T}V = I_{r}$。
+\subsubsection{正交投影矩阵(orthogonal projection matrix)：}
+给定$k$个相互正交的$n$维向量$(a_{1},a_{2}...a_{k})$构成一组基$A$，则对于给定任意$n$维向量$b$，分别求解$b$在$a_{i}$上的投影长度$x_{i}$，再合成得到其投影向量$p = \sum_{i = 1}^{k}{a_{i}x_{i}}$。 由于$x_{i} = \frac{a_{i}^{T}b}{a_{i}^{T}a_{i}}$，故可以得到：
+\begin{equation}
+        p = (\sum_{i = 1}^{k}{\frac{a_{i}a_{i}^{T}}{a_{i}^T a_{i}}) b}
+\end{equation}
+令$P = \sum_{i = 1}^{k}{\frac{a_{i}a_{i}^{T}}{a_{i}^T a_{i}}}$，$U_{k} = (\frac{a_{1}}{\sqrt{a_{1}^{T} a_{1}}},...\frac{a_{k}}{\sqrt{a_{k}^{T} a_{k}}})$，则有:
+\begin{equation}
+    P = U_{k}U_{k}^{T}
+\end{equation}
+
+$P$就是正交投影矩阵，正交表示其对应的基$A$是正交的，投影矩阵的意思就是用$P$左乘某个向量$b$就可以得到其在$A$上的投影$p$。那么一个正交投影矩阵满足以下性质：
+\begin{enumerate}
+    \item $P^T = P$：由公式(2)可以得到。
+    \item $P^2 = P$：一个向量投影到$A$上之后，再投影还是这个向量。
+\end{enumerate}
+
+\subsubsection{PCA}
+假定输入数据为$X = (x_{1},x_{2}...x_{m})$，$X$是一个$n \times m$的矩阵，我们希望将其降至$k$维，并且使得受到的损失最小，也即找到一个正交投影矩阵$P^{*}$（$P^{*}$ 对应$k$个$n$ 维正交基），满足：
+\begin{equation}
+    P^{*} = \arg\min_{P}{\left \| PX - X \right \|_{F}}
+\end{equation}
+也就是投影后，两个矩阵的差距最小，由于：
+\begin{equation}
+    \begin{split}
+        \left \| PX - X \right \|_{F}^2
+        &= Tr((PX - X)^{T}(PX - X))\\
+        &= Tr(X^{T}P^{T}PX - X^{T}PX - X^{T}P^{T}X - X^{T}X)\\
+        &= Tr(-X^{T}PX - X^{T}X)\\
+        &= Tr(-X^{T}PX) - Tr(X^{T}X)
+    \end{split}
+\end{equation}
+
+上述推导用到了$P^{T} = P$，$P^2 = P$，和矩阵\textbf{迹Tr}算符的线性性质。由于$X$是给定的，所以：
+(假设$P = U_{k}U_{k}^{T}$，$U_{k}$为$n \times k$矩阵，且列向量互相正交)。
+\begin{equation}
+    \begin{split}
+        P^{*}
+        &= \arg\min_{P}{\left \| PX - X \right \|_{F}}\\
+        &= \arg\max_{P}{Tr(X^{T}PX)}\\
+        &= \arg\max_{U_{k}}{Tr((X^{T}U_{k})((X^{T}U_{k})^{T}))}\\
+        &= \arg\max_{U_{k}}{Tr(U_{k}^{T}(XX^{T})U_{k})}\\
+        &= \arg\max_{U_{k}}{\sum_{i = 1}^{k}{u_{i}^{T} (XX^{T}) u_{i}}}\\
+    \end{split}
+\end{equation}
+
+令$C = XX^{T}$，取$u_{i}$为将$C$奇异值分解后，第$i$个左奇异值向量(left singular vector)。则可以得到最优解$U_{k}$，所以$PX = U_{k}U_{k}^{T}X$，令$Y = U_{k}^{T}X$，就得到降维后的向量。(后面可以看到，其实左右奇异值向量是一样）
+
+下面解释原理，假设$X$的奇异值分解为：
+\begin{equation}
+    X = U \Sigma V^T
+\end{equation}
+那么有：
+\begin{equation}
+    \begin{split}
+        XX^{T}
+        &= U \Sigma V^T V \Sigma^{T} U^{T}\\
+        &= U \Sigma \Sigma^{T} U^{T}\\
+        &= \sum_{i = 1}^{r}{\sigma_{i}^2 u_{i}u_{i}^T}
+    \end{split}
+\end{equation}
+
+所以有$u_{1}XX^{T}u_{1}^T = \sigma_{1}^2$最大，$u_{2}XX^{T}u_{2}^T = \sigma_{2}^2$次大.....
+
+\subsection{Kernel Principal Component Analysis}
+有时候在$n$维下，线性分类无法区分一类概念，但是将其映射到更高的维度就可以了。本来我们是直接把数据从$n$维降到$k$维，现在我们是将数据先映射到一个更高的维度的Hilbert space（定义了内积的空间），然后再降到$k$维。 我们设这样的映射为$\Phi(x)$，令映射后的数据为$X = (\Phi(x_{1}),\Phi(x_{2}),...,\Phi(x_{m}))$，然后对$X'$套用PCA 即可。
+
+不过我们有时候并不需要知道映射$\Phi(x)$是什么，我们只需要知道一个Kernel Matrix $K$，它表示两两元素的在高维空间的内积。假设我们已经把数据映射后得到了$X$，注意这时候$X$就不是$n$行，$m$列了（因为维度更高）。 那么我们可以定义$K = X^{T} X$（注意这里的矩阵乘法，内积由其所在的高维空间定义，但是由于内积的性质，我们依然可以套用原来的写法）。
+
+直接对$X$进行PCA，也就是对$XX^{T}$进行SVD，我们假设$X$的SVD为$X = U \Sigma V^{T}$，那么有$XX^{T} = U \Sigma^2 U^{T}$，$K = V \Sigma^2 V^{T}$。
+令$\Lambda = \Sigma ^2$，$\lambda_{i}$表示第$i$个对角元素。
+
+我们的目标是，将降维结果$Y$能用$K$表示，而不是$X$的形式。
+由之前的结论:
+\begin{equation}
+    Y = U_{k}^{T} X
+\end{equation}
+那么我们先把$U_{k}$试着用$K$来表示，我们把$X = U \Sigma V^{T}$ 两边同时右乘$V \Sigma^{-1}$得到$U = X V \Sigma^{-1}$（$\Sigma$ 是可逆的），改写一下：
+\begin{equation}
+    \begin{split}
+        U &= X V \Lambda^{-1/2}\\
+          &= X (\frac{v_{1}}{\sqrt{\lambda_{1}}},\frac{v_{2}}{\sqrt{\lambda_{2}}},...,\frac{v_{r}}{\sqrt{\lambda_{r}}})
+    \end{split}
+\end{equation}
+所以有:
+\begin{equation}
+    U_{k} = (X\frac{v_{1}}{\sqrt{\lambda_{1}}},X\frac{v_{2}}{\sqrt{\lambda_{2}}},...,X\frac{v_{k}}{\sqrt{\lambda_{k}}})
+\end{equation}
+
+带入得到：
+\begin{equation}
+    \begin{split}
+        Y &= U_{k}^{T} X\\
+          &= (X\frac{v_{1}}{\sqrt{\lambda_{1}}},X\frac{v_{2}}{\sqrt{\lambda_{2}}},...,X\frac{v_{k}}{\sqrt{\lambda_{k}}})^{T} X\\
+          &= (X^{T}X\frac{v_{1}}{\sqrt{\lambda_{1}}},X^{T}X\frac{v_{2}}{\sqrt{\lambda_{2}}},...,X^{T}X\frac{v_{k}}{\sqrt{\lambda_{k}}})^{T}\\
+          &= (K\frac{v_{1}}{\sqrt{\lambda_{1}}},K\frac{v_{2}}{\sqrt{\lambda_{2}}},...,K\frac{v_{k}}{\sqrt{\lambda_{k}}})^{T}
+    \end{split}
+\end{equation}
+由特征向量性质$K v_{i} = \lambda_{i} v_{i}$，代入得到：
+\begin{equation}
+    \begin{split}
+        Y &= (\sqrt{\lambda_{1}}v_{1},\sqrt{\lambda_{2}}v_{2},...,\sqrt{\lambda_{k}}v_{k})^{T}
+    \end{split}
+\end{equation}
+
+也就是给定核矩阵$K$，就能够求出原$m$个数据的降维表示。
+
+\subsection{Johnson-Lindenstrauss lemma}
+该引理说的是，对于$m$个$n$维的点，可以用一个映射将其降维至$k(k\geq O(\frac{\log m}{\epsilon^2}))$，同时满足任意两点之间的距离比原来不超过($1\pm \epsilon$)倍。下面开始证明：
+\begin{lem}\label{Johnson-Lindenstrauss lemma1}
+    假定$Q$服从自由度为$k$的卡方分布，则对于任意$0 < \epsilon < 1/2$，有如下不等式成立：
+    \begin{equation}
+        \Pr[(1-\epsilon)k \leq Q \leq (1+\epsilon)k ] \geq 1-2e^{-(\epsilon^2 - \epsilon^3)k/4}
+    \end{equation}
+\end{lem}
+
+\begin{proof}
+正难则反，先计算Q在取值范围外的概率，再减去。
+\begin{gather}
+\begin{split}
+    \Pr[Q \geq (1+\epsilon)k]&= \Pr[\exp(\lambda Q) \geq \exp(\lambda(1 + \epsilon)k)]\\
+    &\leq \frac{E[\exp(\lambda Q)]}{\exp(\lambda(1 + \epsilon)k)}\\
+\end{split}\\
+\begin{split}
+    E[\exp(\lambda Q)] &= \prod_{i = 1}^{k}E[e^{\lambda X_{i}^2}]\\
+\end{split}\\
+\begin{split}
+    E[e^{\lambda X_{i}^2}] &= \int_{-\infty}^{\infty}{\frac{e^{\lambda t^2}}{\sqrt{2\pi}}e^{-t^2/2}  \mathrm{d}t}\\
+    &= \frac{1}{\sqrt{1 - 2\lambda}}\\
+\end{split}
+\end{gather}
+
+式(17)要求$Re(\lambda) < 1/2$。所以(15)可以继续写成：
+\begin{equation}
+\begin{split}
+    \Pr[Q \geq (1+\epsilon)k] &\leq \frac{(1-2\lambda)^{-k/2}}{\exp(\lambda(1 + \epsilon)k)}
+\end{split}
+\end{equation}
+
+将等式右边对$\lambda$ 求导，并令导数等于0，得到:
+\begin{equation}
+    \lambda^{*} = \frac{\epsilon}{2 (\epsilon + 1)} < 1/2
+\end{equation}
+
+带入$\lambda^{*}$得到：
+\begin{equation}
+    \Pr[Q \geq (1 + \epsilon)k] \leq (\frac{1 + \epsilon}{\exp(\epsilon)})^{k/2}
+\end{equation}
+
+
+考虑到
+\begin{equation}
+   \begin{split}
+    \exp(\epsilon - (\epsilon^2 - \epsilon^3)/2) &\geq 1 + [\epsilon - (\epsilon^2 - \epsilon^3)/2] + [\epsilon - (\epsilon^2 - \epsilon^3)/2]^2/2\\
+    &=(1 + \epsilon +  (5 \epsilon^4)/8 - \epsilon^5/4 + \epsilon^6/8)\\
+    &\geq 1 + \epsilon
+    \end{split}
+\end{equation}
+
+故有：
+\begin{equation}
+    \Pr[Q \geq (1 + \epsilon)k] \leq \exp(-k(\epsilon^2 - \epsilon^3)/4)
+\end{equation}
+
+类似可以证明:
+\begin{equation}
+    \Pr[Q \leq (1 - \epsilon)k] \leq \exp(-k(\epsilon^2 - \epsilon^3)/4)
+\end{equation}
+由Union bound可以得到引理成立。
+\end{proof}
+
+\begin{lem}\label{Johnson-Lindenstrauss lemma2}
+    给定$n$维向量$x$，和一个$k$行$n$列的矩阵$A$，保证A中的元素均独立同$N(0,1)$分布，那么对于任意$0 < \epsilon < 1/2$有：
+    \begin{equation}
+        \Pr[(1-\epsilon)\left \| x \right \|^2\leq  \left \| \frac{1}{\sqrt{k}}{Ax}\right \|^2 \leq (1+\epsilon)\left \| x \right \|^2]
+        \geq 1-2e^{-(\epsilon^2 - \epsilon^3)k/4}
+    \end{equation}
+\end{lem}
+\begin{proof}
+     \begin{equation}
+        \begin{split}
+            \text{上式左边}\\
+            &= \Pr[(1-\epsilon)k \leq  \left \| {Ax}\right \|^2 / \left \| x \right \|^2 \leq (1+\epsilon)k]
+        \end{split}
+     \end{equation}
+
+令$\hat{x} = Ax$，$T_{j} = \hat{x}_{j} / \left \| x \right \|$，有$T_{j}$服从$N(0,1)$，故得到$Q = \sum_{i = 1}^{k}{T_{j}^2}$服从自由度为$k$的卡方分布。由Lemma\ref{Johnson-Lindenstrauss lemma1} 可以得到结论成立。
+\end{proof}
+
+\begin{lem}[Johnson-Lindenstrauss]\label{Johnson-Lindenstrauss lemma3}
+    对于任意$0 < \epsilon < 1/2$，和任意整数$m > 4$，令$k = \frac{20 \log m }{\epsilon^2}$。则对于任意$n$为空间的$m$个点构成的集合$V$，存在一个映射$f: {R}^{n} \rightarrow R^{k}$，使得对于任意$u,v \in V$，
+    \begin{equation}
+        (1-\epsilon)\left \|u - v\right \|^2 \leq \left \| f(u) - f(v) \right \|^2 \leq (1 + \epsilon) \left \| u - v \right \|^2
+    \end{equation}
+\end{lem}
+
+\begin{proof}
+    我们将$V$中的点，标号为$v_{1},v_{2},...,v_{m}$，令事件$A_{ij}$表示$x = v_{i} - v_{j}$满足Lemma\ref{Johnson-Lindenstrauss lemma2} 的不等式。则只要能说明：
+    \begin{equation}
+        \Pr[\bigcap_{1\leq i < j \leq m}{A_{ij}}] > c
+    \end{equation}
+
+    其中$c$为一给定大于0的常数。 由Lemma2可知，
+    \begin{equation}
+    \Pr[A_{ij}^C] = 1 - \Pr[A_{ij}] \leq  2e^{-(\epsilon^2 - \epsilon^3)k/4}
+    \end{equation}
+
+    所以可以得到：
+    \begin{equation}
+        \begin{split}
+            \Pr[\bigcap_{1\leq i < j \leq m}{A_{ij}}]
+            &= 1 - \Pr[\bigcup_{1\leq i < j\leq m}{A^{C}_{ij}}]\\
+            &\geq 1 - \sum_{1 \leq i < j \leq m} \Pr[A^{C}_{ij}]\\
+            &\geq 1 - (m - 1)m / 2 * 2e^{-(\epsilon^2 - \epsilon^3)k/4}\\
+        \end{split}
+    \end{equation}
+
+    取$\epsilon = 1/2$上式概率取到最小，当$k = \frac{20 \log m}{\epsilon^2}$时，有：
+    \begin{equation}
+        \begin{split}
+            \Pr[\bigcap_{1\leq i < j \leq m}{A_{ij}}]
+            &\geq 1 - (m - 1)m / 2 * 2m^{-(5 - 2.5)}\\
+            &\geq 1 - m^2 * 2m^{-2.5}\\
+            &\geq 1 - 2m^{-0.5}\\
+            &> 0\\
+        \end{split}
+    \end{equation}
+\end{proof}
+
+
+\end{CJK*}
+\end{document}
