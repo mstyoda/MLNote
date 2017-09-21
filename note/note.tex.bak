@@ -51,7 +51,7 @@
 \setlength{\baselineskip}{1.3\baselineskip}
 \title {\textbf{ML note}}
 
-\author{mstyoda}
+\author{mstyoda ÂæÐùÔ´}
 \date{}
 \maketitle
 \tableofcontents
@@ -89,7 +89,7 @@ Rademacher ComplexityÊÇÓÃÀ´ºâÁ¿Ò»¸öº¯Êý×å$G: X \rightarrow \mathbb{R}$µÄ¸´ÔÓ³Ì¶È
 \end{gather}
 \end{Thm}
 
-ÔÚÖ¤Ã÷Ö®Ç°£¬ÎÒÃÇÏÈÀ´¿´¿´Õâ¸ö¶¨ÀíÏëÒª±í´ïµÄÒâË¼£¬¸ù¾ÝPACÄÇÒ»ÕÂ½ÚµÄ¶¨Òå£¬Generalization errorºÍ Empirical error·Ö±ðÎª£º
+ÔÚÖ¤Ã÷Ö®Ç°£¬ÎÒÃÇÏÈÀ´¿´¿´Õâ¸ö¶¨ÀíÏëÒª±í´ïµÄÒâË¼£¬¸ù¾ÝPAC ÄÇÒ»ÕÂ½ÚµÄ¶¨Òå£¬Generalization errorºÍ Empirical error·Ö±ðÎª£º
 \begin{gather}
     R(h) = \Pr_{x \sim D}[h(x) \neq c(x)] = E_{x \sim D}[1_{h(x) \neq c(x)}]\\
     \hat{R}(h) = \frac{1}{m}\sum_{i=1}^{m}{1_{h(x_{i})\neq c(x_{i})}}
@@ -104,7 +104,7 @@ $R(h)$ËµµÄ ¼ÙÉè$h$µÄ´íÎóÂÊ£¬$\hat{R}(h)$ËµµÄÊÇ ¼ÙÉè$h$ÔÚÕâ$m$ ¸ö²âÊÔÑù±¾ÉÏµÄ´íÎó
     \end{cases}
 \end{equation}
 
-ÄÇÃ´¶¨ÀíÖÐ×ó±ßµÄ$E[g(z)]$¾Í¶ÔÓ¦ÓÚ$R(h)$£¬ÓÒ±ßµÄ$\frac{1}{m}\sum_{i = 1}^{m}g(z_i)$¶ÔÓ¦ÓÚ$\hat{R}(h)$¡£ËùÒÔ¶¨ÀíËµµÄÆäÊµÊÇ£º
+ÄÇÃ´¶¨ÀíÖÐ×ó±ßµÄ$E[g(z)]$¾Í¶ÔÓ¦ÓÚ$R(h)$£¬ÓÒ±ßµÄ$\frac{1}{m}\sum_{i = 1}^{m}g(z_i)$¶ÔÓ¦ÓÚ$\hat{R}(h)$¡£ ËùÒÔ¶¨ÀíËµµÄÆäÊµÊÇ£º
 \[R(h) \leq \hat{R}(h) + 2 \mathcal{R}_{m}(G) + \sqrt{\frac{\log{\frac{1}{\delta}}}{2m}}\]
 ÓÉÓÚ$R(h)$ÊÇºÜÄÑËµÃ÷µÄ£¬µ«ÊÇ$\hat{R}(h)$ÊÇ¿ÉÒÔÊµÑéµÃµ½µÄ£¬¸Ãbound¾ÍÄÜÀûÓÃÊµÑéµÃ³öµÄ½á¹ûÀ´¹ÀËã$R(h)$µÄÒ»¸öÉÏ½ç¡£×¢Òâµ½$G$½ö½ö¸ú$L$ºÍ$H$ÓÐ¹Ø£¬ËùÒÔÎÒÃÇ½«$2 \mathcal{R}_{m}(G)$Ð´³É$H$ µÄÐÎÊ½£º(ÖÐ¼äµÄÍÆµ¼»ùÓÚ$\sigma_{i}$ÊÇ¾ùÔÈ·Ö²¼ÔÚ$\{-1,1\}$µÄËæ»ú±äÁ¿£¬ËùÒÔ$E[\sigma_{i}] = 0$)
 \begin{equation}
@@ -351,7 +351,7 @@ E[e^{t\sigma_{i} x_{i}}] \leq e^{ta}E[\frac{b - \sigma_{i} x_{i}}{b - a}]
 
     \begin{enumerate}
         \item »ù´¡£º $m = 1$Ê±£¬$d = 0$£¬$d = 1$¶¼ÓÐ½áÂÛ³ÉÁ¢¡£
-        \item ¹éÄÉ£º $m \geq 2$Ê±£¬Èô$d = 0$Ôò½áÂÛ³ÉÁ¢£¬·ñÔòÁî$S$ÎªÂú×ã$|H_{|S}| = \Pi_{H}(m)$µÄÒ»¸öSample¡£ Áî$G$±íÊ¾½«$H$Ô¼Êøµ½$S$ÉÏµÄº¯Êý¼¯ºÏ(½«$H$¶¨ÒåÓò¸Ä³É$S$)£¬ÓÐ$|G| = \Pi_{H}(m)$¡£
+        \item ¹éÄÉ£º $m \geq 2$Ê±£¬Èô$d = 0$Ôò½áÂÛ³ÉÁ¢£¬·ñÔòÁî$S$ÎªÂú×ã$|H_{|S}| = \Pi_{H}(m)$ µÄÒ»¸öSample¡£ Áî$G$±íÊ¾½«$H$Ô¼Êøµ½$S$ÉÏµÄº¯Êý¼¯ºÏ(½«$H$¶¨ÒåÓò¸Ä³É$S$)£¬ÓÐ$|G| = \Pi_{H}(m)$¡£
 
             ÏÂÃæÎÒÃÇ½«$G$·Ö¸î³ÉÁ½¸ö¼ÙÉè¿Õ¼ä$G_{1}$ºÍ$G_{2}$£¬Ê¹µÃ$VCdim(G_{1}) \leq d$£¬$VCdim(G_{2}) \leq d - 1$£¬ÇÒÓÐ$|G_{1}| \leq \Pi_{G_{1}}(m - 1)$£¬$|G_{2}| \leq \Pi_{G_{2}}(m - 1)$£¬¾ÍÄÜÍê³É¹éÄÉ£º
 
@@ -414,7 +414,7 @@ E[e^{t\sigma_{i} x_{i}}] \leq e^{ta}E[\frac{b - \sigma_{i} x_{i}}{b - a}]
 
  Ò»¸ö$n$Î¬³¬Æ½Ãæ¿ÉÒÔÓÃÒ»¸ö$n$Î¬ÏòÁ¿$w = (w_{1},w_{2}...w_{n})^{T}$ºÍÒ»¸öÊµÊý$b$±íÊ¾£¬¸ÃÆ½ÃæÓÉ$w \cdot x = b$ È·¶¨¡£ ËùÒÔ¶ÔÓÚ¸Ã³¬Æ½Ãæ·ÖÀàÆ÷¶Ôµã$x$µÄ·ÖÀàÎª$sgn(w \cdot x - b)$£¬ÏÂÃæ¸ø³öÉÏÊö¶¨ÀíµÄÖ¤Ã÷£º
 \begin{proof}
-    Áî$m = n + 1$£¬¹¹Ôì$S_{X} = (x_{0},x_{1},...,x_{n})$£¬ÆäÖÐ$x_{0}$ÎªÔ­µã£¬$x_{i}$Îª$n$Î¬one$-$hotÏòÁ¿£¬µÚ$i$Î¬Îª1¡£ Ôò¶ÔÓÚÈÎÒâ$S_{Y} = (y_{0},y_{1},...,y_{n})$£¬$y_{i} \in \{-1,1\}$£¬ÔòÁî$w = (y_{1},y_{2},...,y_{n})$£¬
+    Áî$m = n + 1$£¬¹¹Ôì$S_{X} = (x_{0},x_{1},...,x_{n})$£¬ÆäÖÐ$x_{0}$ÎªÔ­µã£¬$x_{i}$ Îª$n$Î¬one$-$hotÏòÁ¿£¬µÚ$i$Î¬Îª1¡£ Ôò¶ÔÓÚÈÎÒâ$S_{Y} = (y_{0},y_{1},...,y_{n})$£¬$y_{i} \in \{-1,1\}$£¬ÔòÁî$w = (y_{1},y_{2},...,y_{n})$£¬
     $b = y_{0}/2$£¬ÔòÓÐ£º
     \begin{equation}
             sgn(w \cdot x_{i} - b) = sgn(y_{i} - y_{0}/2) = y_{i}
@@ -554,8 +554,164 @@ AdaBoostµÃµ½µÄ$g$µÄempirical error Âú×ã£º
     \end{split}
 \end{equation}
 
+ÓÉÓÚ$\sum_{i = 1}^{m}{D_{T + 1}(i)} = 1 = \sum_{i = 1}^{m}{\frac{\exp(-y_{i}g_{T}(x_{i}))}{m \prod_{s = 1}^{T}Z_{s}}}$£¬ËùÒÔÓÐ£º
+\begin{gather}
+    \sum_{i = 1}^{m}{\frac{1}{m}{\exp(-y_{i}g_{T}(x_{i}))}} = {\prod_{s = 1}^{T}Z_{s}} = \prod_{s = 1}^{T}{2[\epsilon_{s}(1 - \epsilon_{s})]^{\frac{1}{2}}}
+\end{gather}
 
+´úÈëÉÏÊ½¿ÉÒÔµÃµ½£º
+\begin{equation}
+    \begin{split}
+        \hat{R}(g) &\leq \frac{1}{m}\sum_{i = 1}^{m}{e^{-g(x_{i})y_{i}}}\\
+        &\leq {\prod_{s = 1}^{T}{2[\epsilon_{s}(1 - \epsilon_{s})]^{\frac{1}{2}}}}\\
+        &= \prod_{s = 1}^{T}{2\sqrt{-\left(\epsilon_{s} - \frac{1}{2}\right)^2 + \frac{1}{4}}}\\
+        &= \prod_{s = 1}^{T}{\sqrt{1 - 4 \left(\epsilon_{s} - \frac{1}{2}\right)^2}}\\
+        &\leq \prod_{s = 1}^{T}{e^{-2 \left(\epsilon_{s} - \frac{1}{2}\right)^2}}\\
+        &= \exp\left[\sum_{s = 1}^{T}-2 \left(\epsilon_{s} - \frac{1}{2}\right)^2\right]
+    \end{split}
+\end{equation}
 \end{proof}
+ËùÒÔ´ÓÕâ¸ö½áÂÛÎÒÃÇ¿ÉÒÔ¿´µ½£¬Ëæ×Åµü´ú´ÎÊý$T$µÄÔö¼Ó£¬$\hat{R}(g)$»áÔ½À´Ô½Ð¡£¬µ«²»ÒâÎ¶×Å${R}(g)$¾Í»áÔ½À´Ô½Ð¡£¬Ò²¼´ÎÒÃÇ²»½öÒª¿¼ÂÇ$\hat{R}(g)$»¹ÐèÒª¿¼ÂÇËüºÍ$R(g)$µÄ²î¾à£¬ÎÒÃÇÏÈµÃµ½$g$µÄ¼ÙÉè¿Õ¼ä$\mathcal{F}_{T}$£º
+\begin{equation}
+    \mathcal{F}_{T} = \left\{sgn\left(\sum_{t = 1}^{T}\alpha_{t}h_{t} \right): \alpha_{t} \in \mathbb{R},h_{t} \in H,t\in[1,T] \right\}
+\end{equation}
+ÓÉÊéÉÏ½áÂÛ£¬¿ÉÒÔÖªµÀ
+\begin{equation}
+    VCdim(\mathcal{F}_{T}) \leq 2(d + 1)(T + 1)\log_{2}((T+1)e)
+\end{equation}
+ÆäÖÐ$d = VCdim(H)$¡£´ÓÕâ¸öÊ½×Ó¿ÉÒÔ¿´³ö£¬$VCdim(\mathcal{F}_{T})$°´$O(T\log T)$Ôö³¤£¬ÓÉÇ°ÃæVCdim µÄÐÔÖÊ¿ÉÒÔÖªµÀ£¬$\hat{R}(g)$ºÍ$R(g)$µÄ²î¾àÔÚ²»¶ÏÔö´ó£¬Ò²¾ÍÊÇËµËæ×Åµü´ú´ÎÊýµÄÔö¶à£¬¿ÉÄÜµ¼ÖÂOverfit¡£
+
+\section{On-Line Learning}
+\subsection{Introduction}
+On-Line LearningÖ¸µÄÊÇÑµÁ·ÑùÀý²»ÊÇÒ»ÏÂ×ÓÈ«²¿¸ø³ö£¬¶øÊÇ·Ö³É$T$ÂÖ£¬Ã¿Ò»ÂÖ¸ø³öÒ»¸öÊý¾Ý$(x_{t},y_{t})$£¬ÎÒÃÇÐèÒªÀûÓÃÕâ¸öÊý¾ÝÐÞÕýÎÒÃÇµÄÄ£ÐÍ£¬ÕâÊ±ºòÎÒÃÇ¾Í²»ÄÜ¼ÙÉèÑµÁ·Êý¾ÝÂú×ãÄ³ÖÖ·Ö²¼£¬¶øÇÒÎÒÃÇ»¹Ï£ÍûÑ§»áÄ³ÖÖconceptÖ®Ç°·¸¾¡Á¿ÉÙµÄ´íÎó¡£ ½ÓÏÂÀ´¾Í½éÉÜ¼¸ÖÖÔÚÏßÑ§Ï°µÄË¼Â·£¬ÒÔ¼°ÆÀ¼Û±ê×¼¡£
+
+\subsection{Prediction with expert advice}
+ÕâÊÇÒ»ÀàÔÚÏßÑ§Ï°µÄË¼Â·£¬ÏÈ¸ø$N$¸öexpert£¬ÆäÊµÒ²¾ÍÊÇÒ»¸ö´óÐ¡Îª¼ÙÉè¿Õ¼ä$H$£¬Ã¿Óöµ½Ò»¸öÊý¾Ý$x_{t}$£¬»á×ÛºÏ$H$ÖÐexpert¸ø³öÔ¤²â$\hat{y_{t}}$£¬È»ºóµÃµ½$label$ $y_{t}$£¬¸ù¾ÝÔ¤²âÊÇ·ñÕýÈ·À´µ÷ÕûexpertµÄ¡°·¢ÑÔÈ¨¡±£¬×îºóµÃµ½Ò»¸öÄ£ÐÍ¡£
+
+ÒýÈëÒ»¸öºâÁ¿±ê×¼regret(ÎÒÃÇÏ£Íû×îÐ¡»¯regret)£¬ËüµÄ¶¨ÒåÊ½Îª£º
+\begin{equation}
+    R_{T} = \sum_{t = 1}^{T}{L(\hat{y_{t}},y_{t})} - \min_{i = 1}^{N} \sum_{t = 1}^{T}{L(y_{t,i},y_{t})}
+\end{equation}
+
+$L(\hat{y_{t}},y_{t})$ÊÇLoss-function£¬$R_{T}$±íÊ¾$T$ÂÖÏÂÀ´×ÜµÄLoss£¬ºÍ·¸´íÎó×îÉÙµÄÄÇ¸öexpertµÄLossµÄ²î¡£ Õâ¾ÍÊÇÎªÊ²Ã´½Ð×öregret£¬Èç¹ûµ±Ê±ÌýÁËÄÇ¸ö×î´ÏÃ÷µÄexpert£¬¾Í²»»á¶à·¸ÕâÃ´¶à´íÎóÁË¡£
+
+\subsubsection{Mistake bounds and Halving algorithm}
+ÔÚÕâÀïÎÒÃÇ½ö¿¼ÂÇrealizable-case£¬Ò²¾ÍÊÇ$c \in H$¡£Halving algorithm ¾ÍÊÇÒ»¸ö·Ç³£¼òµ¥µÄÏë·¨£¬Óöµ½Ò»¸ö$x_{t}$£¬ÈÃ$H$ÖÐµÄËùÓÐexpert¶¼×ö³öÔ¤²â£¬È»ºóºÍÈËÊý¶àµÄ£¨Ò»¶¨¹ý°ë£©Ò»·½×öÒ»ÑùµÄÔ¤²â$\hat{y}_{t}$£¬Èç¹û´íÁË£¬¾Í°ÑÕâÒ»¶ÑexpertÈ«²¿´Ó$H$ÖÐÌß³ö£¬ÕâÑù¼È±£Ö¤ÁËÕýÈ·ÐÔÒ²ÈÃ$H$ ¼õÉÙÁËÖÁÉÙÒ»°ë¡£
+
+ÕâÀïÒýÈëÁíÍâÒ»¸öºâÁ¿±ê×¼mistake bound model£¬ËüºâÁ¿µÄÊÇÒ»¸öÔÚÏßÑ§Ï°Ëã·¨$A$µÄÄÜÁ¦£¬Ê×ÏÈ¹Ì¶¨concept $c$£¬Áî£º
+\begin{equation}
+    M_{A}(c) = \max_{x_{1},x_{2}...x_{T}}|mistakes(A,c)|
+\end{equation}
+ÏÂ±ê${x_{1},x_{2}...x_{T}}$±íÊ¾ÈÎÈ¡Ò»¸öÕýÕûÊý$T$£¬ÇÒ$T$ ÂÖ¸ø³öµÄ$x_{t}$Ò²ÊÇÈÎÈ¡£¬×ÛºÏÆðÀ´¾ÍÊÇÈÎÈ¡Ò»¸öÔÚÏßÐòÁÐ¡£
+
+È»ºóÔÙÀ©Õ¹µ½concept class $C$£º
+\begin{equation}
+    M_{A}(C) = \max_{c \in C} M_{A}(c)
+\end{equation}
+
+½ÓÏÂÀ´ÎÒÃÇ¸ø³öHalving algorithmµÄmistake bound£º
+\begin{Thm}
+    ¶ÔÓÚÓÐÏÞ´óÐ¡µÄ¼ÙÉè¿Õ¼ä$H$£¬¿¼ÂÇrealizable-caseÊ±ÓÐ£º
+    \begin{equation}
+        M_{Halving}(H) \leq \log_{2}|H|
+    \end{equation}
+\end{Thm}
+
+\begin{proof}
+    ¸ù¾ÝHalving algorithmËã·¨µÄÐÔÖÊ£¬Ã¿Ò»´Î·¸´í£¬»áµ¼ÖÂ$H$¼õÉÙÒ»°ë£¬ËùÒÔ·¸´í´ïµ½$\log_{2}|H|$Ö®ºó£¬$H$ÖÐ¾ÍÖ»Ê£ÏÂÒ»¸öexpertÁË£¬ÓÉÓÚÊÇrealizable-case£¬ËùÒÔÊ£ÏÂµÄÕâÒ»¸öexpert¾ÍÊÇ$c$£¬¶øcÊÇ²»»á·¸´íµÄ¡£
+\end{proof}
+Èç´ËÎÒÃÇ¾ÍÕÒµ½ÁËÆäÉÏ½ç£¬ÎÒÃÇ»¹¿ÉÒÔÕÒµ½ÆäÏÂ½ç£º
+
+\begin{Thm}
+    ¶ÔÓÚÓÐÏÞ´óÐ¡µÄ¼ÙÉè¿Õ¼ä$H$£¬¿¼ÂÇrealizable-caseÊ±ÓÐ£º
+    \begin{equation}
+        VCdim(H) \leq M_{Halving}(H) \leq \log_{2}|H|
+    \end{equation}
+\end{Thm}
+\begin{proof}
+    Áî$d = VCdim(H)$£¬Ò²¼´´æÔÚ$S = (x_{1},x_{2}...x_{d})$Âú×ã$|H_{S}| = 2^d$£¬ÎÒÃÇ¾Í°´ÕÕ¶ÔÊÖ²ßÂÔ¹¹Ôì$y_{1},y_{2}...y_{d}$£¬Ò²¼´µÚ$t(1 \leq t \leq d)$ÂÖ£¬Èç¹û$\hat{y}_{t} = 1$£¬¾ÍÈÃ$y_{t} = -1$£¬¿ÉÒÔÖªµÀÔÚÕâ$d$ÂÖ£¬Ëã·¨ÓÀÔ¶¶¼ÔÚ·¸´í¶øÇÒ$H$²»»áÎª¿Õ£¬ËùÒÔÕÒµ½Ò»×é$S$£¬Ê¹µÃÆä·¸´íÖÁÉÙÎª$d$´Î£¬Ö¤Ã÷ÁË½áÂÛ¡£
+\end{proof}
+
+\subsubsection{Weighted majority algorithm}
+Halving algorithmÖ®ËùÒÔ¸Ò°Ñ·¸´íµÄ¶¼\textbf{È¥µô}£¬¾ÍÊÇÒòÎªÆä¿¼ÂÇµÄÊÇrealizable-case£¬µ«ÊÇÏÖÊµÖÐ£¬Õâ¸ö¼ÙÉèºÜÄÑÊµÏÖ£¬ÎÒÃÇ²»ÄÜ±£Ö¤$H$ÖÐÒ»¶¨ÓÐÒ»¸öÓÀÔ¶²»»á´íµÄexpert£¬Ö»ÄÜ¹»ÈÃËã·¨×îºóÄÜ´ïµ½×¼È·ÂÊ$p$($p \leq 1$)£¬ÕâÊ±ºòÈ¥µô·¸´íµÄexpert¾Í²»Í×ÁË£¬¿ÉÄÜµ½×îºó$H$¾Í±»É¾¹âÁË¡£ Ò»¸ö½ÏÎª»ººÍµÄ·½·¨£¬¾ÍÊÇ¸ù¾ÝÒ»¸öexpertµÄ·¸´í´ÎÊýµÄ¶àÉÙÀ´¾ö¶¨ËüµÄ¾ö¶¨ÔÚ×îÖÕ¾ö¶¨ÖÐµÄ±ÈÖØ¡£
+
+Õâ¾ÍÊÇWeighted majority algorithm£¬Ëü¸³ÓèÃ¿¸ö$H$ÖÐ$h_{i}$Ò»¸öÈ¨ÖØ$w_{t,i}$£¬¸ÃÈ¨ÖØ»áËæ×ÅËã·¨µÄ½øÐÐ¸üÐÂ£¬ËùÒÔÓë$t$ÓÐ¹Ø£¬Ëã·¨Á÷³Ì´óÖÂÈçÏÂ£º
+\begin{enumerate}
+    \item ³õÊ¼»¯$w_{1,i} = 1$£¬¶ÔÓÚ$1 \leq i \leq N$¡£
+    \item µÚ$t$ÂÖµÃµ½$x_{t}$£¬Èç¹û$\sum_{h_{i}(x_{t}) = 1}{w_{t,i}} > \sum_{h_{i}(x_{t}) = -1}{w_{t,i}}$£¬ÄÇÃ´$\hat{y}_{t} = 1$£¬·ñÔò$\hat{y}_{t} = -1$¡£
+    \item ¸üÐÂ$w_{t + 1,i}$£º
+    \begin{equation}
+        w_{t+1,i} =
+        \begin{cases}
+            w_{t,i} & h_{i}(x_{t}) = y_{t}\\
+            \beta w_{t,i} &  h_{i}(x_{t}) \neq y_{t}
+        \end{cases}
+    \end{equation}
+    \item Áî$t += 1$£¬goto ²½Öè2£¬Ö±µ½$t > T$¡£
+\end{enumerate}
+
+ÓÉÓÚÏÖÔÚÊÇnon-realizable-case£¬ÏñÖ®Ç°Ëã·¨ÄÇÑùÓÃ$M_{A}(C)$À´ÆÀ¹ÀÆäÐÔÄÜ¾Í²»Í×£¬ÒòÎª¼«¶Ë´íÎó¿ÉÄÜ»áËæ×Å$T$ µÄÔö¼Ó¶øÔö¼Ó£¬ÓÚÊÇÎÒÃÇ¹Ì¶¨ÂÖÊý$T$£¬ÔÙÀ´±È½Ï£¬Ò²¼´ÓÃ$m_{T}$±íÊ¾$T$ÂÖÊý¾ÝÏÂÀ´£¬Ëã·¨Ò»¹²³ö´í´ÎÊý£¬ÓÃ$m_{T}^{*}$±íÊ¾$T$ÂÖÊý¾ÝÏÂÀ´£¬³ö´í×îÉÙµÄexpertµÄ³ö´í´ÎÊý£¬ÄÇÃ´¿ÉÒÔÌá¹©$m_{T}$µÄÉÏ½ç£º
+
+\begin{Thm}
+    ¼ÙÈç$\beta \in (0,1)$£¬ÇÒ$|H| = N$£¬¼ÙÉè$T$ÂÖµÄÊý¾Ý¹Ì¶¨£¬$m_{T}$±íÊ¾Õâ$T$ÂÖËã·¨³ö´í¸öÊý£¬$m_{T}^{*}$±íÊ¾Õâ$T$ÂÖÖÐ·¸´í×îÉÙµÄexpertµÄ³ö´í´ÎÊý£¬ÔòÓÐ£º
+    \begin{equation}
+        m_{T} \leq \frac{\log{N} + m_{T}^{*}  \log{\frac{1}{\beta}}}{\log{\frac{2}{1 + \beta}}}
+    \end{equation}
+\end{Thm}
+\begin{proof}
+    ÓÃÊÆÄÜ·ÖÎö¿ÉÒÔ¼òµ¥µØÖ¤Ã÷Õâ¸ö½áÂÛ£¬¶¨ÒåÊÆÄÜº¯Êý$W_{t} = \sum_{i = 1}^{N}{w_{t,i}}$£¬ËüÂú×ãÈçÏÂÐÔÖÊ£º
+    \begin{enumerate}
+        \item $W_{t}$Ëæ×Å$t$µÄÔö´óµ¥µ÷²»ÉÏÉý¡£
+        \item $W_{t} \geq w_{t,i} \geq 0$ ¶ÔÓÚ$1 \leq i \leq N$¶¼³ÉÁ¢¡£
+    \end{enumerate}
+
+¿¼ÂÇµÚ$t$ÂÖËã·¨×öÁË´íÎóµÄÔ¤²â£¬ÄÇÃ´Ò»¶¨ÓÐ×ö³ö´íÎó¾ö¶¨µÄÒ»·½µÄÈ¨ÖµºÍ´óÓÚ$1/2W_{t}$£¬¸ù¾ÝËã·¨ÃèÊö£¬ÕâÐ©expert¶¼»áÊÜµ½$\beta$µÄ³Í·££¬ËùÒÔÒ»¶¨ÓÐ£º
+\begin{equation}
+    W_{t + 1} \leq \frac{1}{2}\beta W_{t} + \frac{1}{2}W_{t} = \frac{1 + \beta}{2} W_{t}
+\end{equation}
+
+ÆäÖÐ$\frac{1 + \beta}{2} < 1$£¬ËùÒÔÓÐ£º
+\begin{equation}
+    W_{T} \leq  \left(\frac{1 + \beta}{2}\right)^{m_{T}} N
+\end{equation}
+
+¼ÙÉèÔÚÕâ$T$ÂÖÖÐ×îÀ÷º¦µÄexpertÎª$h_{i}$£¬ÓÐÐÔÖÊ2¿ÉÒÔÖªµÀ£º
+\begin{equation}
+    W_{T} \geq w_{T,i} = \beta^{m_{T}^{*}}
+\end{equation}
+
+ÁªÁ¢ÈçÉÏÁ½Ê½×Ó£¬¿ÉÒÔµÃµ½£º
+\begin{gather}
+    \beta^{m_{T}^{*}} \leq \left(\frac{1 + \beta}{2}\right)^{m_{T}} N\\
+    m_{T}^{*} \log\left(\beta \right) \leq m_{T}\log \left(\frac{1 + \beta}{2} \right) + \log N\\
+    -m_{T}^{*} \log\left(\beta \right) \geq -m_{T}\log \left(\frac{1 + \beta}{2} \right) - \log N\\
+    \frac{m_{T}^{*} \log\left(\frac{1}{\beta}\right) + \log N }{ \log \left(\frac{2}{1 + \beta} \right) } \geq m_{T}\\
+\end{gather}
+\end{proof}
+Õâ¾ÍÖ¤Ã÷ÁË½áÂÛ¡£
+
+\subsubsection{Randomized weighted majority algorithm}
+ÎÒÃÇ»¹¿ÉÒÔ½«ÉÏÊöËã·¨¸Ä³ÉÒ»¸öËæ»úËã·¨£¬Ö»ÐèÒª°Ñ$w_{t,i}$±ä³É¸ÅÂÊ¾ÍÐÐ£º
+\begin{enumerate}
+    \item ³õÊ¼»¯$w_{1,i} = 1$£¬$p_{1,i} = 1/N$£¬¶ÔÓÚ$1 \leq i \leq N$¡£
+    \item µÚ$t$ÂÖµÃµ½$x_{t}$£¬Ëã·¨°´ÕÕ$p_{t,i}$µÄ¸ÅÂÊ¾ö¶¨Ñ¡Ôñ$h_{i}$µÄ¾ö¶¨¡£
+    \item ¸üÐÂ$p_{t + 1,i}$£¬$w_{t + 1,i} = 1$£º
+    \begin{gather}
+        w_{t+1,i} =
+        \begin{cases}
+            w_{t,i} & h_{i}(x_{t}) = y_{t}\\
+            \beta w_{t,i} &  h_{i}(x_{t}) \neq y_{t}
+        \end{cases}\\
+        p_{t + 1,i} = w_{t + 1,i} / \sum_{i = 1}^{N}{w_{t + 1,i}}(\text{¹éÒ»»¯})
+    \end{gather}
+    \item Áî$t += 1$£¬goto ²½Öè2£¬Ö±µ½$t > T$¡£
+\end{enumerate}
+
+ÎªÊ²Ã´ÒªÊ¹ÓÃËæ»úËã·¨£¬ÕâÊÇÒòÎªÈÎÒâÒ»¸ö\textbf{È·¶¨ÐÔËã·¨$A$}¶¼ÎÞ·¨×öµ½ÈÃ$R_{T} = o(N)$($O(N)$µ«²»ÊÇ$\Theta(n)$)£¬ÒòÎª¿ÉÄÜ»áÅöµ½ºÜ¼«¶ËµÄ$x_{t}$ºÍ$N$£¬±È·½Ëµ$N = 2$£¬¶øÁ½¸öexpert Ò»¸öÖ»·µ»Ø1£¬ÁíÒ»¸öÖ»·µ»Ø-1¡£ ¶øÇÒÃ¿Ò»ÂÖ£¬$y_{t}$¶¼ºÍ$\hat{y}_{t}$Ïà·´£¨ÕâÊÇ¿ÉÐÐµÄ£¬ÒòÎªËã·¨ÊÇÈ·¶¨µÄ£©£¬ÄÇÃ´$m_{T} = T$£¬$m_{T}^{*} \leq T/2$£¬ËùÒÔ£º
+\begin{equation}
+    R_{T} = m_{T} - m_{T}^* \geq T/2 = \Omega(N)
+\end{equation}
+
 \section{Dimensionality Reduction}
 \subsection{Principal Component Analysis}
 ÎÒÃÇ¾­³£ÓÃÒ»¸ö$n$Î¬µÄÏòÁ¿À´ÃèÊöÒ»¸öÊÂÎï£¬±ÈÈçËµÒ»¸öµ¥´Ê£¬Ò»ÕÅÍ¼Æ¬¡£ ÄÇÃ´ÓÐÊ±ºò$n$Ì«´óµ¼ÖÂ´¦ÀíÌ«À§ÄÑ¡£ Ï£ÍûÄÜ½«Êý¾ÝÖØÐÂ±íÊ¾³ÉÒ»¸ö$k$Î¬£¨$k$ Ô¶Ô¶Ð¡ÓÚ$n$£©µÄÏòÁ¿¡£ ±ÈÈçÓÐ100¸ö2Î¬ÏòÁ¿£¬Ç¡ºÃ¶¼ÂäÔÚÒ»ÌõÖ±ÏßÉÏ£¬ÄÇÃ´Ö»ÐèÒªÒ»¸öPd£¬¼ÓÉÏ100¸öÊµÊý¾Í¿ÉÒÔ±íÊ¾£¬ µ«ÊÇÒ»°ãÇé¿öÏÂÊý¾Ý²»¿ÉÄÜÇ¡ºÃÂäÔÚÒ»ÌõÖ±ÏßÉÏ¡£ÄÇÃ´Ïë°ÑÕâ100 ¸öµã´Ó¶þÎ¬½µµ½Ò»Î¬£¬¾Í±ØÐëÒªÓÐËùËðÊ§¡£ ÄÇÃ´Ò»¸öÖ±¹ÛµÄ×ö·¨¾ÍÊÇ£¬ÕÒµ½Ò»ÌõÖ±Ïß£¬Ê¹µÃÕâ100¸öµãÀëÕâÌõÖ±ÏßµÄÆ«Àë×îÐ¡£¬È»ºó¶ÔÓÚÄ³¸öµã£¬ËüµÄ½µÎ¬ºóµÄ½á¹û¾ÍÊÇÔÚÕâ¸öÖ±ÏßÉÏµÄÍ¶Ó°¡£
@@ -586,7 +742,7 @@ $P$¾ÍÊÇÕý½»Í¶Ó°¾ØÕó£¬Õý½»±íÊ¾Æä¶ÔÓ¦µÄ»ù$A$ÊÇÕý½»µÄ£¬Í¶Ó°¾ØÕóµÄÒâË¼¾ÍÊÇÓÃ$P$×ó³ËÄ
 \end{enumerate}
 
 \subsubsection{PCA}
-¼Ù¶¨ÊäÈëÊý¾ÝÎª$X = (x_{1},x_{2}...x_{m})$£¬$X$ÊÇÒ»¸ö$n \times m$µÄ¾ØÕó£¬ÎÒÃÇÏ£Íû½«Æä½µÖÁ$k$Î¬£¬²¢ÇÒÊ¹µÃÊÜµ½µÄËðÊ§×îÐ¡£¬Ò²¼´ÕÒµ½Ò»¸öÕý½»Í¶Ó°¾ØÕó$P^{*}$£¨$P^{*}$ ¶ÔÓ¦$k$¸ö$n$ Î¬Õý½»»ù£©£¬Âú×ã£º
+¼Ù¶¨ÊäÈëÊý¾ÝÎª$X = (x_{1},x_{2}...x_{m})$£¬$X$ÊÇÒ»¸ö$n \times m$µÄ¾ØÕó£¬ÎÒÃÇÏ£Íû½«Æä½µÖÁ$k$Î¬£¬²¢ÇÒÊ¹µÃÊÜµ½µÄËðÊ§×îÐ¡£¬Ò²¼´ÕÒµ½Ò»¸öÕý½»Í¶Ó°¾ØÕó$P^{*}$£¨$P^{*}$ ¶ÔÓ¦$k$ ¸ö$n$ Î¬Õý½»»ù£©£¬Âú×ã£º
 \begin{equation}
     P^{*} = \arg\min_{P}{\left \| PX - X \right \|_{F}}
 \end{equation}
@@ -633,9 +789,9 @@ $P$¾ÍÊÇÕý½»Í¶Ó°¾ØÕó£¬Õý½»±íÊ¾Æä¶ÔÓ¦µÄ»ù$A$ÊÇÕý½»µÄ£¬Í¶Ó°¾ØÕóµÄÒâË¼¾ÍÊÇÓÃ$P$×ó³ËÄ
 ËùÒÔÓÐ$u_{1}XX^{T}u_{1}^T = \sigma_{1}^2$×î´ó£¬$u_{2}XX^{T}u_{2}^T = \sigma_{2}^2$´Î´ó.....
 
 \subsection{Kernel Principal Component Analysis}
-ÓÐÊ±ºòÔÚ$n$Î¬ÏÂ£¬ÏßÐÔ·ÖÀàÎÞ·¨Çø·ÖÒ»Àà¸ÅÄî£¬µ«ÊÇ½«ÆäÓ³Éäµ½¸ü¸ßµÄÎ¬¶È¾Í¿ÉÒÔÁË¡£±¾À´ÎÒÃÇÊÇÖ±½Ó°ÑÊý¾Ý´Ó$n$Î¬½µµ½$k$Î¬£¬ÏÖÔÚÎÒÃÇÊÇ½«Êý¾ÝÏÈÓ³Éäµ½Ò»¸ö¸ü¸ßµÄÎ¬¶ÈµÄHilbert space£¨¶¨ÒåÁËÄÚ»ýµÄ¿Õ¼ä£©£¬È»ºóÔÙ½µµ½$k$Î¬¡£ ÎÒÃÇÉèÕâÑùµÄÓ³ÉäÎª$\Phi(x)$£¬ÁîÓ³ÉäºóµÄÊý¾ÝÎª$X = (\Phi(x_{1}),\Phi(x_{2}),...,\Phi(x_{m}))$£¬È»ºó¶Ô$X'$Ì×ÓÃPCA ¼´¿É¡£
+ÓÐÊ±ºòÔÚ$n$Î¬ÏÂ£¬ÏßÐÔ·ÖÀàÎÞ·¨Çø·ÖÒ»Àà¸ÅÄî£¬µ«ÊÇ½«ÆäÓ³Éäµ½¸ü¸ßµÄÎ¬¶È¾Í¿ÉÒÔÁË¡£±¾À´ÎÒÃÇÊÇÖ±½Ó°ÑÊý¾Ý´Ó$n$Î¬½µµ½$k$ Î¬£¬ÏÖÔÚÎÒÃÇÊÇ½«Êý¾ÝÏÈÓ³Éäµ½Ò»¸ö¸ü¸ßµÄÎ¬¶ÈµÄHilbert space£¨¶¨ÒåÁËÄÚ»ýµÄ¿Õ¼ä£©£¬È»ºóÔÙ½µµ½$k$Î¬¡£ ÎÒÃÇÉèÕâÑùµÄÓ³ÉäÎª$\Phi(x)$£¬ÁîÓ³ÉäºóµÄÊý¾ÝÎª$X = (\Phi(x_{1}),\Phi(x_{2}),...,\Phi(x_{m}))$£¬È»ºó¶Ô$X'$Ì×ÓÃPCA ¼´¿É¡£
 
-²»¹ýÎÒÃÇÓÐÊ±ºò²¢²»ÐèÒªÖªµÀÓ³Éä$\Phi(x)$ÊÇÊ²Ã´£¬ÎÒÃÇÖ»ÐèÒªÖªµÀÒ»¸öKernel Matrix $K$£¬Ëü±íÊ¾Á½Á½ÔªËØµÄÔÚ¸ßÎ¬¿Õ¼äµÄÄÚ»ý¡£¼ÙÉèÎÒÃÇÒÑ¾­°ÑÊý¾ÝÓ³ÉäºóµÃµ½ÁË$X$£¬×¢ÒâÕâÊ±ºò$X$¾Í²»ÊÇ$n$ÐÐ£¬$m$ÁÐÁË£¨ÒòÎªÎ¬¶È¸ü¸ß£©¡£ ÄÇÃ´ÎÒÃÇ¿ÉÒÔ¶¨Òå$K = X^{T} X$£¨×¢ÒâÕâÀïµÄ¾ØÕó³Ë·¨£¬ÄÚ»ýÓÉÆäËùÔÚµÄ¸ßÎ¬¿Õ¼ä¶¨Òå£¬µ«ÊÇÓÉÓÚÄÚ»ýµÄÐÔÖÊ£¬ÎÒÃÇÒÀÈ»¿ÉÒÔÌ×ÓÃÔ­À´µÄÐ´·¨£©¡£
+²»¹ýÎÒÃÇÓÐÊ±ºò²¢²»ÐèÒªÖªµÀÓ³Éä$\Phi(x)$ÊÇÊ²Ã´£¬ÎÒÃÇÖ»ÐèÒªÖªµÀÒ»¸öKernel Matrix $K$£¬Ëü±íÊ¾Á½Á½ÔªËØµÄÔÚ¸ßÎ¬¿Õ¼äµÄÄÚ»ý¡£¼ÙÉèÎÒÃÇÒÑ¾­°ÑÊý¾ÝÓ³ÉäºóµÃµ½ÁË$X$£¬×¢ÒâÕâÊ±ºò$X$ ¾Í²»ÊÇ$n$ÐÐ£¬$m$ÁÐÁË£¨ÒòÎªÎ¬¶È¸ü¸ß£©¡£ ÄÇÃ´ÎÒÃÇ¿ÉÒÔ¶¨Òå$K = X^{T} X$£¨×¢ÒâÕâÀïµÄ¾ØÕó³Ë·¨£¬ÄÚ»ýÓÉÆäËùÔÚµÄ¸ßÎ¬¿Õ¼ä¶¨Òå£¬µ«ÊÇÓÉÓÚÄÚ»ýµÄÐÔÖÊ£¬ÎÒÃÇÒÀÈ»¿ÉÒÔÌ×ÓÃÔ­À´µÄÐ´·¨£©¡£
 
 Ö±½Ó¶Ô$X$½øÐÐPCA£¬Ò²¾ÍÊÇ¶Ô$XX^{T}$½øÐÐSVD£¬ÎÒÃÇ¼ÙÉè$X$µÄSVDÎª$X = U \Sigma V^{T}$£¬ÄÇÃ´ÓÐ$XX^{T} = U \Sigma^2 U^{T}$£¬$K = V \Sigma^2 V^{T}$¡£
 Áî$\Lambda = \Sigma ^2$£¬$\lambda_{i}$±íÊ¾µÚ$i$¸ö¶Ô½ÇÔªËØ¡£
@@ -676,7 +832,7 @@ $P$¾ÍÊÇÕý½»Í¶Ó°¾ØÕó£¬Õý½»±íÊ¾Æä¶ÔÓ¦µÄ»ù$A$ÊÇÕý½»µÄ£¬Í¶Ó°¾ØÕóµÄÒâË¼¾ÍÊÇÓÃ$P$×ó³ËÄ
 Ò²¾ÍÊÇ¸ø¶¨ºË¾ØÕó$K$£¬¾ÍÄÜ¹»Çó³öÔ­$m$¸öÊý¾ÝµÄ½µÎ¬±íÊ¾¡£
 
 \subsection{Johnson-Lindenstrauss lemma}
-¸ÃÒýÀíËµµÄÊÇ£¬¶ÔÓÚ$m$¸ö$n$Î¬µÄµã£¬¿ÉÒÔÓÃÒ»¸öÓ³Éä½«Æä½µÎ¬ÖÁ$k(k\geq O(\frac{\log m}{\epsilon^2}))$£¬Í¬Ê±Âú×ãÈÎÒâÁ½µãÖ®¼äµÄ¾àÀë±ÈÔ­À´²»³¬¹ý($1\pm \epsilon$)±¶¡£ÏÂÃæ¿ªÊ¼Ö¤Ã÷£º
+¸ÃÒýÀíËµµÄÊÇ£¬¶ÔÓÚ$m$¸ö$n$Î¬µÄµã£¬¿ÉÒÔÓÃÒ»¸öÓ³Éä½«Æä½µÎ¬ÖÁ$k(k\geq O(\frac{\log m}{\epsilon^2}))$£¬Í¬Ê±Âú×ãÈÎÒâÁ½µãÖ®¼äµÄ¾àÀë±ÈÔ­À´²»³¬¹ý($1\pm \epsilon$) ±¶¡£ÏÂÃæ¿ªÊ¼Ö¤Ã÷£º
 \begin{lem}\label{Johnson-Lindenstrauss lemma1}
     ¼Ù¶¨$Q$·þ´Ó×ÔÓÉ¶ÈÎª$k$µÄ¿¨·½·Ö²¼£¬Ôò¶ÔÓÚÈÎÒâ$0 < \epsilon < 1/2$£¬ÓÐÈçÏÂ²»µÈÊ½³ÉÁ¢£º
     \begin{equation}
