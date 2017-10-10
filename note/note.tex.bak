@@ -691,7 +691,7 @@ Halving algorithm之所以敢把犯错的都\textbf{去掉}，就是因为其考虑的是realizable-c
 这就证明了结论。
 
 \subsubsection{Randomized weighted majority algorithm}
-我们还可以将上述算法改成一个随机算法，只需要把$w_{t,i}$变成概率就行：
+我们还可以将上述算法改成一个随机算法，只需要把$w_{t,i}$ 变成概率就行：
 \begin{enumerate}
     \item 初始化$w_{1,i} = 1$，$p_{1,i} = 1/N$，对于$1 \leq i \leq N$。
     \item 第$t$轮得到$x_{t}$，算法按照$p_{t,i}$的概率决定选择$h_{i}$的决定。
@@ -711,6 +711,81 @@ Halving algorithm之所以敢把犯错的都\textbf{去掉}，就是因为其考虑的是realizable-c
 \begin{equation}
     R_{T} = m_{T} - m_{T}^* \geq T/2 = \Omega(N)
 \end{equation}
+
+对于随机算法，我们需要修改$R_{T}$的定义，这是因为对于给定的$x_{t}$，算法返回的结果并不确定，可以用其期望来代替：
+\begin{equation}
+    R_{T} = \mathcal{L}_{T} - \mathcal{L}_{T}^{\min}
+\end{equation}
+
+其中$\mathcal{L}_{T} = \sum_{t = 1}^{T}{E\left[l(y_{t},\hat{y}_{t}) \right]} = \sum_{t = 1}^{T}{\sum_{i = 1}^{N}{p_{t,i}l_{t,i}}}$，表示$T$轮下来的期望错误。
+
+$\mathcal{L}_{T}^{\min} = \min_{i = 1}^{N}{\sum_{t = 1}^{T}{l_{t,i}}}$。表示犯错误最少的expert的犯错数，这一个量是不涉及随机变量的。
+
+这时候我们可以给出$\mathcal{L}_{T}$和$\mathcal{L}_{T}^{\min}$差距的一个bound，进而给出$R_{T}$ 的bound：
+\begin{Thm}
+    假定$\beta \in [1/2,1)$，那么对于$T > 1$，有如下不等式成立：
+    \begin{equation}
+        \mathcal{L}_{T} \leq \frac{\log N}{1 - \beta} + (2 - \beta) \mathcal{L}_{T}^{min}
+    \end{equation}
+
+    实际中，令$\beta = \max\left\{1/2,1 - \sqrt{(\log N)/T} \right\}$，那么有如下bound成立：
+    \begin{equation}
+        \mathcal{L}_{T} \leq \mathcal{L}_{T}^{\min} + 2 \sqrt{T \log N}
+    \end{equation}
+\end{Thm}
+
+\begin{proof}
+    令$L_{t} = \sum_{i = 1}^{N}p_{t,i}l_{t,i}$，$W_{t} = \sum_{i = 1}^{N}w_{t,i}$，所以有$p_{t,i} = w_{t,i} / W_{t}$。类似Weighted majority algorithm，我们采用势能分析的方法，将$W_{t}$作为势能函数。
+
+    \begin{equation}
+        \begin{split}
+            W_{t + 1} &= \sum_{l_{t,i} = 1}{\beta w_{t,i}} + \sum_{l_{t,i} = 0}{w_{t,i}}\\
+            &= \sum_{i = 1}^{N}{w_{t,i}} + \sum_{l_{t,i} = 1}{(\beta - 1) w_{t,i}}\\
+            &= W_{t} + W_{t}\sum_{l_{t,i} = 1}{(\beta - 1) p_{t,i}}\\
+            &= W_{t} + W_{t}(\beta - 1)L_{t}\\
+            &= W_{t}(1 + (\beta - 1)L_{t})
+        \end{split}
+    \end{equation}
+
+    所以可以得到：$W_{T + 1} = N \prod_{t = 1}^{T}(1 + (\beta - 1)L_{t})$，又因为$W_{T + 1} \geq w_{T + 1,i}$，所以$W_{T + 1} \geq \beta^{\mathcal{L}_{T}^{min}}$，联立可以得到：
+    \begin{gather}
+        N \prod_{t = 1}^{T}(1 + (\beta - 1)L_{t}) \geq  \beta^{\mathcal{L}_{T}^{min}}
+    \end{gather}
+    两边取Log得到：
+    \begin{gather}
+        \log N  + \sum_{t = 1}^{T}\log(1 - (1 - \beta)L_{t}) \geq  {\mathcal{L}_{T}^{min}} \log {\beta}
+    \end{gather}
+    当$0 < x < 1$时，$\log(1 - x) \leq -x$，所以可以放缩上式：
+    \begin{gather}
+        \begin{split}
+            {\mathcal{L}_{T}^{min}} \log {\beta} &\leq \log N  - \sum_{t = 1}^{T}\log(1 - (1 - \beta)L_{t})\\
+            &\leq  \log N - \sum_{t = 1}^{T}(1 - \beta)L_{t}\\
+            &= \log N - (1-\beta)\mathcal{L}_{T}
+        \end{split}
+    \end{gather}
+    两边同时乘以-1，并带进log内部可以得到：
+    \begin{gather}
+        \begin{split}
+            (1 - \beta)\mathcal{L}_{T} \leq {\mathcal{L}_{T}^{min}} \log {\frac{1}{\beta}} + \log N
+        \end{split}\\
+        \begin{split}
+            \mathcal{L}_{T} &\leq -\frac{\mathcal{L}_{T}^{min}\log {\beta}}{(1 - \beta)} + \frac{\log N}{(1 - \beta)}\\
+            &\leq -\frac{\log (1 - (1 - \beta))}{(1 - \beta)}\mathcal{L}_{T}^{min} + \frac{\log N}{(1 - \beta)}
+        \end{split}
+    \end{gather}
+    由于$-\log(1 - x) \leq x + x^2$，所以：
+    \begin{gather}
+        \begin{split}
+            \mathcal{L}_{T} &\leq (2 - \beta)\mathcal{L}_{T}^{min} + \frac{\log N}{(1 - \beta)}
+        \end{split}
+    \end{gather}
+    到此为止证明了第一部分，
+    让右边的式子对$\beta$求导并令其为0，就可以找到一个最紧的bound，此时$\beta_{0} = 1 - \sqrt{(\log N) / T}$，如果$\beta_{0} > 1/2$（定理的前提），则最优解在$\beta_{0}$取到，否则在边界$1/2$取到。
+    这就证明了定理的第二部分，并做适当变形可以得到：
+    \begin{equation}
+        \mathcal{R}_{T} \leq 2 \sqrt{T \log N}
+    \end{equation}
+\end{proof}
 
 \section{Dimensionality Reduction}
 \subsection{Principal Component Analysis}

@@ -1,0 +1,3 @@
+\contentsline {section}{\numberline {1}问\tmspace +\thinmuskip {.1667em}题\tmspace +\thinmuskip {.1667em}背\tmspace +\thinmuskip {.1667em}景：}{2}{section.1}
+\contentsline {section}{\numberline {2}深\tmspace +\thinmuskip {.1667em}入\tmspace +\thinmuskip {.1667em}思\tmspace +\thinmuskip {.1667em}考}{3}{section.2}
+\contentsline {section}{\numberline {3}Train faster, generalize better: Stability of stochastic gradient descent}{4}{section.3}

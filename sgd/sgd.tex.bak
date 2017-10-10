@@ -1,0 +1,241 @@
+\documentclass[12pt,twosidep]{article}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{verbatim}
+\usepackage{CJK}
+\usepackage{indentfirst}
+\usepackage{mathrsfs}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{syntonly}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{ulem}
+\usepackage{fancyhdr}
+\usepackage[CJKbookmarks=true, colorlinks, linkcolor=black, anchorcolor=black, citecolor=blue, urlcolor=black]{hyperref}
+\usepackage{graphicx}
+\usepackage[top = 1.0in, bottom = 1.0in, left = 1.2in, right = 1.2in]{geometry}
+\usepackage{paralist}
+\usepackage{diagbox}
+
+\newtheorem{Def}{Definition}
+\newtheorem{Thm}{Theorem}
+\newtheorem{lem}[Thm]{Lemma}
+
+\begin{document}
+\begin{CJK*}{GBK}{song}
+\hypersetup{CJKbookmarks = true}
+\pagestyle{fancy}
+
+\let\enumerate\compactenum
+\let\endenumerate\endcompactenum
+\let\itemize\compactitem
+\let\enditemize\endcompactitem
+\setlength{\pltopsep}{5pt}
+
+\newcommand{\graph}[2]{
+    {\noindent
+    \begin{minipage}{\textwidth}
+        \centering
+        \includegraphics[width=#1]{#2}
+        \label{fig:non:float}
+    \end{minipage}
+    }
+}
+
+\setlength{\parindent}{2em}
+\setlength{\footskip}{30pt}
+\setlength{\baselineskip}{1.3\baselineskip}
+\title {\textbf{Paper Reading}}
+
+\author{mstyoda 骆轩源}
+\date{}
+\maketitle
+\tableofcontents
+
+\newpage
+\section{问\,题\,背\,景：}
+一个神经网络模型可以用一个$net_{ {w}} : \mathcal{X} \rightarrow \mathcal{Y}$ 的函数来描述，其中$\mathcal{X}$，$\mathcal{Y}$和$ {w}$分别是输入空间，输出空间以及网络参数。 然后定义一个loss function $L : \mathcal{Y}^2 \rightarrow \mathbb{R}$。我们的任务即计算出参数$ {w}^*$满足：
+\begin{equation}
+     {w}^* = \arg\min_{w} \mathbb{E}_{x \sim D}\left[L(net_{w}(x),c(x))\right]
+\end{equation}
+
+其中$c$为需要学习的concept，令$f(w;x) = L(net_{w}(x),c(x))$，函数$R(w) = \mathbb{E}_{x \sim D}\left[f(w;x)\right]$的计算难度很大，所以我们考虑用$\hat{R}(w) = \frac{1}{n}{\sum_{i = 1}^{n}{f(w;x_{i})}}$ 来近似($x_{i}$独立同分布于$D$)。 那么$|R(w) - \hat{R}(w)|$即为generalization error(用$\epsilon_{gen}$表示)。故我们的学习目标即为计算$w^*$满足(能写成如下形式是因为一般情况下$R(w) > \hat{R}(w)$)：
+\begin{equation}
+    w^* = \arg\min_{w} \left(\epsilon_{gen}(w) + \hat{R}(w)\right)
+\end{equation}
+
+现在DL广泛使用方法，都是用SGD类的算法来最小化$\hat{R}(w)$，并没有仔细考虑$\epsilon_{gen}(w)$，只是采用了一些策略，比如：
+\begin{itemize}
+    \item 减少迭代次数$T$。
+    \item 使用小的$batch size$。
+    \item 找平缓一些的极值点。
+    \item 正则化参数。
+    \item 设置Dropout。
+\end{itemize}
+
+这样一些策略，从实验的结果来看，其泛化误差也很小。 那么真的是如上的策略起了作用吗？ 比如\cite{dinh2017sharp}中就提到任何一个平缓的极值点都可以被等价对应到一个“无限尖锐”的极值点。 还有\cite{keskar2016large}提到使用warm-start之后，大的$batch size$ 一样也不会Overfit等等。
+
+\cite{zhang2016understanding}通过让网络fit随机数据证明了现在神经网络有足够的能力记住所有的训练数据，那我们很有可能就学到了一个只是记住了所有样例没有泛化能力的一个模型，但事实并不是这样。
+
+综合来看，DL的泛化能力\textbf{极有可能是SGD的性质决定的}。 \cite{hardt2015train}中给出SGD算法的uniform stability $\epsilon_{stab}$的一个bound，其和step size 的大小，迭代次数$T$以及$f(w;x)$的一些性质有关。
+
+所以一个值得研究的问题就是：目前的深度学习算法学习到的模型有很好的泛化能力是否与SGD有关？ 如果有，具体的关系如何？
+
+\section{深\,入\,思\,考}
+
+假设我们对于给定的训练数据$S$，算法$A$从$H$中学习到了任意一个函数$h$，那么完全可以构造一个能完全fit $S$的对手concept $c$，使得$h$在$S$以外的样例全错。 这样的例子激发我们思考：泛化能力是否与\textbf{$c$的“学习难度”}有关？
+
+那么如果有一个非常简单的$c$固定只返回一种分类，但是$H$非常的复杂，它有非常多的函数都能fit $S$，那么从这些中抽出一个它的generalization error也很大。 所以这个例子又激发我们思考：泛化能力是否与\textbf{模型的表示能力$H$}有关？
+
+将$c$的难易程度和$H$的表示能力合起来，可以得到如下定义的函数族$G$，其中$L$为loss-function：
+\begin{equation}
+    G = \{g(x) = L(h(x),c(x)) : h \in H \}
+\end{equation}
+
+若从传统的VC维观点来看：
+\begin{equation}
+    \begin{split}
+        R(h) &\leq \hat{R}(h) + 2 \mathfrak{R}_{m}(G) + \sqrt{\frac{\log \frac{1}{\delta}}{2 m}}\\
+        & = \hat{R}(h) + \mathfrak{R}_{m}(H) + \sqrt{\frac{\log \frac{1}{\delta}}{2 m}}\\
+    \end{split}
+\end{equation}
+
+故\textbf{仅和模型的表示能力$H$}有关。 但是该上界给出的其实以$H$中\textbf{泛化最差}的那个为标准，而忽略算法$A$的筛选作用，对于DL模型，其表示能力非常强，
+\cite{zhang2016understanding}中就提到了一些神经网络可以完全fit随机数据。 所以使用传统的分析方法\textbf{并不适用！}
+
+
+故需要考虑算法的因素，于是开始研究SGD算法的Algorithm stability。 也即研究当算法$A$接受到最多一个元素不同的训练样例$S$和$S'$时，是否有如下关系成立：
+\begin{equation}
+    \sup_{z} \mathbb{E}_{A}\left[f(A(S);x) - f(A(S');x)\right] \leq \epsilon
+\end{equation}
+
+对于DL来说，$w$对应一个$h_{w} \in H$，那么$f(w;x) = L(h_{w}(x),c(x))$，也即对应$g \in G$，而$g$函数是\textbf{同时}带着concept $c$和模型表示能力$H$的，所以在研究SGD算法Algorithm stability的时候，两种因素都有被综合考虑。
+
+由于DL的结构非常复杂，$f(w;x)$的\textbf{性质很难归纳}，在\cite{hardt2015train}中是认为$f(w)$满足L-Lipschitz
+
+\section{Train faster, generalize better: Stability of stochastic gradient descent}
+本文的主要贡献是从Algorithm Stability的角度来分析了SGD算法的generalization bound。 假定一个随机算法$A$，它对于一组训练数据$S$产生一个输出$w$，那么对于任意给定两组相差不过一个元素训练数据$S$和$S'$，如果有：
+\begin{equation}
+    \sup_{z} \mathbb{E}_{A}\left[f(A(S);x) - f(A(S');x)\right] \leq \epsilon_{stab}
+\end{equation}
+则可以得出：
+
+\begin{Thm}[Generalization in expectation]
+    对于一个$\epsilon_{stab}$-uniformly stable的随机算法$A$，有：
+    \begin{equation}
+        \epsilon_{gen} = abs(\mathbb{E}_{S,A}\left[R_{S}[A(S)] - R[A(S)] \right] ) \leq \epsilon_{stab}
+    \end{equation}
+\end{Thm}
+\begin{proof}
+    令$S = (z_{1},z_{2}...z_{n})$，$S' = (z_{1}',z_{2}'...z_{n}')$，$S^{(i)} = (z_{1},z_{2},...z_{i}'...,z_{n})$也即仅第$i$位等于$z_{i}'$其他都与$S$相同，所以可以把$\mathbb{E}_{S,A}\left[R_{S}[A(S)]\right]$写成：
+    \begin{equation}
+        \begin{split}
+            \mathbb{E}_{S,A}\left[R_{S}[A(S)]\right] &= \mathbb{E}_{S,A}\left[\frac{1}{n}\sum_{i = 1}^{n}f(A(S);z_{i})\right]\\
+            &= \mathbb{E}_{A}\left[\frac{1}{n}\sum_{i = 1}^{n}\sum_{s,z}{\mathbb{P}(S = s, z_{i} = z)f(A(s);z)}\right]\\
+            &= \mathbb{E}_{A}\left[\frac{1}{n}\sum_{i = 1}^{n}\sum_{s,z}{\mathbb{P}(z_{1} = s_{1},z_{2} = s_{2}...,z_{i} = s_{i} = z,...,z_{n} = s_{n})f(A(s);z)}\right]\\
+            &= \mathbb{E}_{A}\left[\frac{1}{n}\sum_{i = 1}^{n}\sum_{s,z}{\mathbb{P}(z_{1} = s_{1},z_{2} = s_{2}...,z_{i}' = s_{i} = z,...,z_{n} = s_{n})f(A(s);z)}\right]\\
+            &= \mathbb{E}_{S,S',A}\left[\frac{1}{n}\sum_{i = 1}^{n}f(A(S^{(i)});z_{i}')\right]\\
+        \end{split}
+    \end{equation}
+
+    之后再求$\mathbb{E}_{S,A}\left[R_{S}[A(S)]\right]$与$\mathbb{E}_{S,A}\left[R[A(S)]\right]$ 的差$\delta$：
+    \begin{equation}
+        \begin{split}
+            \delta &= \mathbb{E}_{S,S',A}\left[\frac{1}{n}\sum_{i = 1}^{n}f(A(S^{(i)});z_{i}')\right] -
+            \mathbb{E}_{S,S',A}\left[\frac{1}{n}\sum_{i = 1}^{n}f(A(S);z_{i}')\right]\\
+            &= \mathbb{E}_{S,S',A}\left[ \frac{1}{n}\sum_{i = 1}^{n}{f(A(S^{(i)});z_{i}') - f(A(S);z_{i}')} \right]
+        \end{split}
+    \end{equation}
+
+    由于$S^{(i)}$和$S$相差不超过一个元素，所以可以应用$\epsilon_{stab}$-uniformly stable的性质，得到：
+    \begin{equation}
+        \epsilon_{gen} = |\delta| \leq \epsilon_{stab}
+    \end{equation}
+\end{proof}
+这意味着只需要分析SGD算法在遇到两个相差很小的训练样例$S$ 和$S'$ 时返回的$w$和$w'$的loss的差距的上界，将问题大大简化。 Paper中为了方便定义了$f(w) = \frac{1}{|Batch|} \sum_{x \in Batch}{f(w;x)}$，它的性质其实和$f(w;x)$相同，假如对于所有的$x$ 都有$f(w;x)$是L-Lipschitz，那么$f(w)$也是。
+
+当$f(w)$为凸函数，且为L-Lipschitz和$\beta$-smooth，则当$\alpha_{t} \leq 2/ \beta$的时候有：
+\begin{equation}
+    \epsilon_{stab} \leq \frac{2L^2}{n}\sum_{t = 1}^{T}{\alpha_{t}}
+\end{equation}
+
+当然$f(w)$一般都是非凸，这时如果$f(w)$依旧满足L-Lipschitz和$\beta$-smooth，并且$|f(w)| \leq 1$然后固定一个常数$c$用来约束$\alpha_{t} \leq c / t$，这时候有：
+\begin{equation}
+    \epsilon_{stab} \leq \frac{1 + 1/{\beta c}}{n - 1}(2 c L^2)^{\frac{1}{\beta c + 1}} T ^{\frac{\beta c}{\beta c + 1}}
+\end{equation}
+
+对于非凸的情况，简单介绍一下证明的思路： 固定$z$，找$\mathbb{E}_{z}{|f(w_{T};z) - f(w_{T}';z)|}$ 的上界。 由于$f(w)$是L-Lipschitz，令$\delta_{t} = \left\|w_{t} - w_{t}'\right\|$，所以有$\left\|f(w_{t}) - f(w_{t}')\right\| \leq L \delta_{t}$。也即把$f$的差距变为$w$的差距。
+
+一开始$\delta_{0} = 0$，如果能找到一个“不错”的函数$\Phi_{t}$使得$\delta_{t + 1} \leq \Phi_{t}(\delta_{t})$，那么就可以从$t = 0$一路递推到$t = T$求出$\delta_{T}$ 的上界。
+
+从$\delta_{t + 1} \leq \Phi_{t}(\delta_{t})$可以看出一步放缩其实是“有误差”的，想让得到上界更加“紧”，就需要减少这样递推的长度，所以我们可以找到其他$\delta_{t_0} = 0$ 的点，然后从$t_0$开始递推到$T$，长度就被缩短了。
+
+所以作者先证明了如下结论：
+\begin{lem}
+    如果$S$和$S'$相差不超过1个元素，$w_{t},w_{t}'$分别为$A$对于$S$和$S'$第$t$次迭代的结果，且$f(w;z)$是L-Lipschitz且非负，则对于任意的$z \in Z$，$t_0 \in \{1,2,...,n\}$，假设算法采用\textbf{随机排列}的方式，则有：
+    \begin{equation}
+        \mathbb{E}|f(w_{T};z) - f(w_{T}';z)| \leq \frac{t_0}{n} \sup_{w,z}f(w;z) + L \mathbb{E}[\delta_{T} | \delta_{t_0} = 0]
+    \end{equation}
+\end{lem}
+\begin{proof}
+  对于任意$t_0 \in \{1,2,...,n\}$，有：
+  \begin{equation}
+        \begin{split}
+            \mathbb{E}|f(w_{T};z) - f(w_{T}';z)| &= \mathbb{P}[\delta_{t_0} = 0] \mathbb{E}[\left|f(w_{T};z) - f(w_{T}';z)\right| | \delta_{t_0} = 0]\\
+            &+\mathbb{P}[\delta_{t_0} \neq 0] \mathbb{E}[\left|f(w_{T};z) - f(w_{T}';z)\right| | \delta_{t_0} \neq 0]\\
+            &\leq L \mathbb{E}[\delta_{T} |\delta_{t_0} = 0] + \mathbb{P}[\delta_{t_0} \neq 0] \sup_{w,z}f(w,z)
+        \end{split}
+  \end{equation}
+
+  这一步将$\mathbb{P}[\delta_{t_0} = 0]$放缩成1，$\mathbb{E}[\left|f(w_{T};z) - f(w_{T}';z)\right| | \delta_{t_0} \neq 0]$放缩成$\sup_{w,z}f(w,z)$，这样的放缩\textbf{太过松弛！}。
+
+  由于算法使用的随机排列(一开始随机一个排列，然后不断循环这个排列)，令随机变量$I$表示使得$z_{i} \neq z_{i}'$ 的下标，若$I > t_0$则肯定有$\delta_{t_0} = 0$ 因为前面的过程完全一致，所以$\mathbb{P}[\delta_{t_0} \neq 0] \leq \frac{t_0}{n}$，代入上式即完成证明。
+\end{proof}
+
+之后做的事情就是考虑$\mathbb{E}[\delta_{T} | \delta_{t_0} = 0]$的上界，也就是从$t_{0}$开始往后递推。 令$\Delta_{t} = \mathbb{E}[\delta_{t} | \delta_{t_0} = 0]$。
+
+对于第$t + 1$次迭代，有$1 - 1/n$概率$S$和$S'$选出相同的元素，此时$\Delta_{t + 1} \leq (1 + \alpha_{t}\beta)\Delta_{t}$，还有$1/n$的概率选出不同的元素，这时候$\Delta_{t+1} \leq \Delta_{t} + 2 \alpha_t L$，
+所以有:
+\begin{equation}
+    \Delta_{t+1} \leq (1 - 1/n) (1 + \alpha_{t}\beta)\Delta_{t} + \frac{1}{n}\Delta_t + \frac{2 \alpha_t L}{n}
+\end{equation}
+
+之后代入条件$\alpha_{t} \leq c / t$，再使用一些放缩可以得到：
+\begin{equation}
+    \Delta_{T} \leq \frac{2L}{\beta (n - 1)} \left(\frac{T}{t_0}\right)^{\beta c}
+\end{equation}
+
+由于$f(w) \leq 1$，所以综合这些结果得到：
+\begin{equation}
+    \mathbb{E}|f(w_{T};z) - f(w_{T}';z)| \leq \frac{t_0}{n} + \frac{2L^2}{\beta (n - 1)} \left(\frac{T}{t_0}\right)^{\beta c}
+\end{equation}
+
+由于$t_0$可以任取，所以就要选取一个使得右边的值最小，于是就得到了：
+\begin{gather}
+    t_0^* = (2cL^2)^{\frac{1}{\beta c + 1}}T^{\frac{\beta c}{\beta c + 1}}\\
+    \mathbb{E}|f(w_{T};z) - f(w_{T}';z)| \leq \frac{1 + 1/{\beta c}}{n - 1}(2 c L^2)^{\frac{1}{\beta c + 1}} T ^{\frac{\beta c}{\beta c + 1}}
+\end{gather}
+
+关于凸函数的情况证明方法其实类似，总结一下，作者的证明手段主要为：
+\begin{itemize}
+    \item 将$|f(w) - f(w')|$通过$L$-Lipschitz性质bound 在$L|w - w'|$。
+    \item 利用SGD 迭代更新的性质和$f$的光滑性，得到$\delta_{t + 1}$和$\delta_{t}$之间的关系。
+    \item 适当选择递推的起点$t_0$。
+\end{itemize}
+
+而我认为作者最终给出的bound太悲观的原因有：
+\begin{itemize}
+    \item 用$L$-Lipschitz变为研究$\delta_{t}$的大小之后，就少利用了$f(w)$的很多性质。
+    \item 关于非凸部分的证明中，有些地方放缩太大，比如直接用$
+    \sup_{w,z}f(w,z)$来替代$t_0 \neq 0$时的期望。
+\end{itemize}
+
+
+\bibliographystyle{acm}
+\bibliography{sgd}
+\end{CJK*}
+\end{document}

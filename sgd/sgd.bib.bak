@@ -1,0 +1,18 @@
+@article{zhang2016understanding,
+  title={Understanding deep learning requires rethinking generalization},
+  author={Zhang, Chiyuan and Bengio, Samy and Hardt, Moritz and Recht, Benjamin and Vinyals, Oriol},
+  journal={arXiv preprint arXiv:1611.03530},
+  year={2016}
+}
+@article{hardt2015train,
+  title={Train faster, generalize better: Stability of stochastic gradient descent},
+  author={Hardt, Moritz and Recht, Benjamin and Singer, Yoram},
+  journal={arXiv preprint arXiv:1509.01240},
+  year={2015}
+}
+@article{dinh2017sharp,
+  title={Sharp minima can generalize for deep nets},
+  author={Dinh, Laurent and Pascanu, Razvan and Bengio, Samy and Bengio, Yoshua},
+  journal={arXiv preprint arXiv:1703.04933},
+  year={2017}
+}
